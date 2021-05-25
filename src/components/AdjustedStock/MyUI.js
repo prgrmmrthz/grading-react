@@ -18,28 +18,18 @@ const MyUI = ({
   formValues,
   onSubmit,
   handleOnDelete,
-  handleSelection
+  handleSelection,
 }) => {
   return (
     <div>
       <Card>
-        <Card.Header>STOCK ADJUSTED LIST</Card.Header>
+        <Card.Header>STOCK ADJUSTMENT ENTRY</Card.Header>
         <Card.Body>
           <Card.Title>
             <Container>
               <Row>
-                <Col md={4}>
+                <Col>
                   <DateFromTo handleSelection={handleSelection} />
-                </Col>
-                <Col md={{ span: 4, offset: 4 }}>
-                  {/* <Button
-                    onClick={() => {
-                      onNew();
-                    }}
-                    variant="primary"
-                  >
-                    Add Supplier
-                  </Button> */}
                 </Col>
               </Row>
             </Container>
@@ -56,6 +46,7 @@ const MyUI = ({
               handleOnEdit={handleOnEdit}
               handleOnDelete={handleOnDelete}
               handleSort={handleSort}
+              showDelete={false}
             />
           </Card.Text>
         </Card.Body>
@@ -65,7 +56,7 @@ const MyUI = ({
         openModal={openModal}
         setOpenModal={setOpenModal}
         title={mode === 1 ? "New" : "Edit"}
-        size="sm"
+        size="md"
       >
         <MyForm
           preloadedValues={formValues}

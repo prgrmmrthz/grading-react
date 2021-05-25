@@ -6,14 +6,20 @@ export default function DateFromTo({handleSelection}) {
   const [state, setState] = useState([
     {
       startDate: new Date(),
-      endDate: addDays(new Date(), 7),
+      endDate: new Date(),
       key: "selection",
     },
   ]);
+
+  const handleThisSelection = (item) => {
+    setState([item]);
+    handleSelection(item);
+  };
+
   return (
     <div>
       <DateRangePicker
-        onChange={(item) => handleSelection(item.selection)}
+        onChange={(item) => handleThisSelection(item.selection)}
         showSelectionPreview={true}
         moveRangeOnFirstSelection={false}
         months={2}
