@@ -62,8 +62,23 @@ export default function StockAdjustment() {
     setData([...a]);
   };
 
-  const onSubmit = async (data, e) => {
-    console.debug(data);
+  const onSubmit = async ({ adjustqty, id, reason }, e) => {
+    setLoading(true);
+    const a = { fn: `insertStockAdjustment(${id},${adjustqty},'${reason}')` };
+    const response = await api.post("/callSP", a).catch((err) => {
+      setLoading(false);
+      alert("cannot save!");
+    });
+    if (response["data"][0].res === 1) {
+      setLoading(false);
+      alert("saved");
+      setOpenModal(false);
+      console.debug(response);
+      retrieveData();
+    } else if (response["data"][0].res === 2) {
+      setLoading(false);
+      alert("cannot save!");
+    }
   };
 
   return (
