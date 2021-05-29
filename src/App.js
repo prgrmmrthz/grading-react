@@ -5,27 +5,18 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import MyNavbar from "./components/MyNavbar";
 import MainPage from "./components/MainPage";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
-  const Auth = {
-    isAuthenticated: false,
-    authenticate(cb){
-      this.isAuthenticated=true
-      setTimeout(cb,100)
-    },
-    signout(cb){
-      this.isAuthenticated=false
-      setTimeout(cb,100)
-    }
-  }
-
   return (
-    <Router>
-      <div className="App">
-        <MyNavbar />
-        <MainPage />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="App">
+          <MyNavbar />
+          <MainPage />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 

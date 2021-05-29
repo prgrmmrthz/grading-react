@@ -57,7 +57,7 @@ export default function SideNav() {
         </div>
         <div className="sb-sidenav-footer">
           <div className="small">Logged in as:</div>
-          {auth.user.toUpperCase()}
+          user
         </div>
       </nav>
     </div>

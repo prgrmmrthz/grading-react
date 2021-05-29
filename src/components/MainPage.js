@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import SideNav from "./SideNav";
@@ -10,9 +10,10 @@ import StockAdjustment from "./StockAdjustment";
 import AdjustedStock from './AdjustedStock';
 import StockIn from './StockIn';
 import Login from "./Login";
+import { AuthContext } from "../context/AuthContext";
 
 export default function MainPage() {
-  const auth = JSON.parse(localStorage.getItem('auth') || {isAuthenticated: false});
+  const [auth, setAuth] = useContext(AuthContext);
 
   return (
     <div id="layoutSidenav">

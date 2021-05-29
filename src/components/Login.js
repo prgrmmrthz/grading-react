@@ -3,9 +3,12 @@ import {useHistory} from 'react-router-dom';
 import {
     Button
   } from "react-bootstrap";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Login({history}) {
+  const [auth, setAuth] = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
@@ -13,7 +16,6 @@ export default function Login({history}) {
   } = useForm();
 
   useEffect(() => {
-    const auth=JSON.parse(localStorage.getItem('auth'));
     if(auth.isAuthenticated){
       history.push("/dashboard")
     }
@@ -25,7 +27,8 @@ export default function Login({history}) {
           id: 1,
           isAuthenticated: true
       }
-    localStorage.setItem('auth', JSON.stringify(a));
+    setAuth(a);
+    history.push("/dashboard")
   }
 
   return (
@@ -54,7 +57,7 @@ export default function Login({history}) {
                     {errors.name && <span>This field is required</span>}
                   </div>
                   <div className="form-group">
-                    <label className="small mb-1" for="inputPassword">
+                    <label className="small mb-1">
                       Password
                     </label>
                     <input
