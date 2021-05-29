@@ -8,7 +8,7 @@ export default function AdjustedStock() {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAsc, setIsAsc] = useState(false);
-  const header = ["id", "product", "unit", "qty", "reason", "date"];
+  const header = ["id", "product", "unit", "qty", "reason", "date", "adjustedBy"];
   const [data, setData] = useState([]);
   const [formValues, setFormValues] = useState({});
   const [mode, setMode] = useState(1);
@@ -16,11 +16,11 @@ export default function AdjustedStock() {
   const retrieveData = async (from, to) => {
     const request = {
       cols:
-        "sa.id,p.name as product,u.name as unit,sa.adjust_qty as qty,sa.reason,DATE_FORMAT(sa.updatedAt,'%m-%d-%Y') as date",
+        "sa.id,p.name as product,u.name as unit,sa.adjust_qty as qty,sa.reason,DATE_FORMAT(sa.updatedAt,'%m-%d-%Y') as date, a.name as adjustedBy",
       table: "stock_adjustment sa",
       order: "sa.updatedAt desc",
       join:
-        "left join products p on p.id=sa.product left join units u on u.id=p.unit",
+        "left join products p on p.id=sa.product left join units u on u.id=p.unit left join user a on a.id=sa.user",
       wc:
         from && to
           ? `sa.updatedAt >= '${cd(from)}' and sa.updatedAt <= '${cd(to)}'`
@@ -79,7 +79,7 @@ export default function AdjustedStock() {
 
   const onPrint = () => {
     const dataPrint = data.map((v) => {
-      const { id, product, unit, qty, reason, date } = v;
+      const { id, product, unit, qty, reason, date, adjustedBy } = v;
       return {
         id,
         product,
@@ -87,6 +87,7 @@ export default function AdjustedStock() {
         qty,
         reason,
         date,
+        adjustedBy
       };
     });
     var columns = [
@@ -96,6 +97,7 @@ export default function AdjustedStock() {
       { title: "Qty", dataKey: "qty" },
       { title: "Reason", dataKey: "reason" },
       { title: "Date", dataKey: "date" },
+      { title: "Adjusted By", dataKey: "adjustedBy" },
     ];
     var doc = new jsPDF("p", "pt", "letter");
     var totalPagesExp = "{total_pages_count_string}";

@@ -1,13 +1,14 @@
 import { useForm } from "react-hook-form";
-import {useHistory} from 'react-router-dom';
-import {
-    Button
-  } from "react-bootstrap";
-import { useContext, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { Button, Spinner } from "react-bootstrap";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import api from "../api/supplier";
 
-export default function Login({history}) {
+export default function Login() {
   const [auth, setAuth] = useContext(AuthContext);
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -16,20 +17,34 @@ export default function Login({history}) {
   } = useForm();
 
   useEffect(() => {
-    if(auth.isAuthenticated){
-      history.push("/dashboard")
+    if (auth.isAuthenticated) {
+      history.push("/dashboard");
     }
-  }, [])
+  }, []);
 
-  const onSubmit = ({user}) => {
+  const onSubmit = async ({ user, pword }) => {
+    setLoading(true);
+    const a = { fn: `login('${user}','${pword}')` };
+    const response = await api.post("/callSP", a).catch((err) => {
+      setLoading(false);
+      alert(JSON.stringify(err.error));
+    });
+    const {res,idX,nameX} = response["data"][0];
+    if (res === 1) {
+
       const a = {
-          user,
-          id: 1,
-          isAuthenticated: true
-      }
-    setAuth(a);
-    history.push("/dashboard")
-  }
+        user: nameX,
+        id: idX,
+        isAuthenticated: true,
+      };
+      setAuth(a);
+      history.push("/dashboard");
+      setLoading(false);
+    }else{
+      alert('Authentication Failed!');
+      setLoading(false);
+    }
+  };
 
   return (
     <main>
@@ -43,9 +58,7 @@ export default function Login({history}) {
               <div className="card-body">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="form-group">
-                    <label className="small mb-1">
-                      User
-                    </label>
+                    <label className="small mb-1">User</label>
                     <input
                       className="form-control py-4"
                       type="text"
@@ -57,9 +70,7 @@ export default function Login({history}) {
                     {errors.name && <span>This field is required</span>}
                   </div>
                   <div className="form-group">
-                    <label className="small mb-1">
-                      Password
-                    </label>
+                    <label className="small mb-1">Password</label>
                     <input
                       className="form-control py-4"
                       id="inputPassword"
@@ -75,8 +86,21 @@ export default function Login({history}) {
                     <a className="small" href="password.html">
                       Forgot Password?
                     </a>
-                    <Button type="submit" className="btn btn-primary">
-                      Login
+                    <Button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={loading}
+                    >
+                      {loading && (
+                        <Spinner
+                          as="span"
+                          animation="grow"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                        />
+                      )}
+                      {loading ? "  Loading..." : "  Submit"}
                     </Button>
                   </div>
                 </form>

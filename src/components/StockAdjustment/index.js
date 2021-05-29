@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import api from "../../api/supplier";
+import { AuthContext } from "../../context/AuthContext";
 import MyUI from "./MyUI";
 
 export default function StockAdjustment() {
+  const [auth, setAuth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAsc, setIsAsc] = useState(false);
@@ -64,7 +66,7 @@ export default function StockAdjustment() {
 
   const onSubmit = async ({ adjustqty, id, reason }, e) => {
     setLoading(true);
-    const a = { fn: `insertStockAdjustment(${id},${adjustqty},'${reason}')` };
+    const a = { fn: `insertStockAdjustment(${id},${adjustqty},'${reason}',${auth.id})` };
     const response = await api.post("/callSP", a).catch((err) => {
       setLoading(false);
       alert("cannot save!");

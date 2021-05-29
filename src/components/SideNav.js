@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function SideNav() {
-  const auth = JSON.parse(localStorage.getItem('auth'));
+  const [auth, setAuth] = useContext(AuthContext);
 
   const [linksData, setlinksData] = useState([
     {
@@ -57,7 +58,7 @@ export default function SideNav() {
         </div>
         <div className="sb-sidenav-footer">
           <div className="small">Logged in as:</div>
-          user
+          {auth.user || ''}
         </div>
       </nav>
     </div>
