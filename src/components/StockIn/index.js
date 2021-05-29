@@ -4,7 +4,7 @@ import MyUI from "./MyUI";
 var jsPDF = require("jspdf");
 require("jspdf-autotable");
 
-export default function AdjustedStock() {
+export default function StockIn() {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAsc, setIsAsc] = useState(false);

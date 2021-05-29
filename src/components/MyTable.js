@@ -23,7 +23,7 @@ export default function MyTable({ header, data, handleOnEdit, handleOnDelete, ha
           {data.map((d) => (
             <tr key={d.id}>
               {header.map((h) => (
-                <td onClick={()=>handleOnEdit(d)}>{d[h]}</td>
+                <td onDoubleClick={()=>handleOnEdit(d)}>{d[h]}</td>
               ))}
               {showDelete && <td align="right">
                 <Button variant="danger" onClick={()=>handleOnDelete(d)}>X</Button>

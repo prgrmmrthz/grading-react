@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import SideNav from "./SideNav";
@@ -8,21 +8,27 @@ import Dashboard from "./Dashboard";
 import Suppliers from "./Suppliers";
 import StockAdjustment from "./StockAdjustment";
 import AdjustedStock from './AdjustedStock';
+import StockIn from './StockIn';
+import Login from "./Login";
 
 export default function MainPage() {
+  const auth = JSON.parse(localStorage.getItem('auth') || {isAuthenticated: false});
+
   return (
     <div id="layoutSidenav">
-      <SideNav />
+      {auth.isAuthenticated && <SideNav />}
       <div id="layoutSidenav_content">
         <main>
           <div className="container-fluid">
             <br />
-                <Route exact path="/" component={Dashboard} />
+                <Route exact path="/" component={Login} />
+                <Route exact path="/login" component={Login} />
                 <Route exact path="/dashboard" component={Dashboard} />
                 <Route exact path="/purchase-orders" component={PurchaseOrders} />
                 <Route exact path="/stock-adjustment" component={StockAdjustment} />
                 <Route exact path="/adjusted-stock" component={AdjustedStock} />
                 <Route exact path="/suppliers" component={Suppliers} />
+                <Route exact path="/stock-in" component={StockIn} />
           </div>
         </main>
         <MyFooter />

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function SideNav() {
+  const auth = JSON.parse(localStorage.getItem('auth'));
+
   const [linksData, setlinksData] = useState([
     {
       group: "Inventory",
@@ -9,6 +11,7 @@ export default function SideNav() {
         { text: "Suppliers", link: "/suppliers" },
         { text: "Stock Adjustment", link: "/stock-adjustment" },
         { text: "Adjusted Stock", link: "/adjusted-stock" },
+        { text: "Stock-In", link: "/stock-in" },
       ],
     },
   ]);
@@ -54,7 +57,7 @@ export default function SideNav() {
         </div>
         <div className="sb-sidenav-footer">
           <div className="small">Logged in as:</div>
-          Start Bootstrap
+          {auth.user.toUpperCase()}
         </div>
       </nav>
     </div>
