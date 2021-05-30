@@ -10,8 +10,8 @@ export default function AdjustedStock() {
   const [isAsc, setIsAsc] = useState(false);
   const header = ["id", "product", "unit", "qty", "reason", "date", "adjustedBy"];
   const [data, setData] = useState([]);
-  const [formValues, setFormValues] = useState({});
-  const [mode, setMode] = useState(1);
+  const [formValues] = useState({});
+  const [mode] = useState(1);
 
   const retrieveData = async (from, to) => {
     const request = {

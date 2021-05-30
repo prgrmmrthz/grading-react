@@ -14,7 +14,7 @@ export default function MyTable({ header, data, handleOnEdit, handleOnDelete, ha
         <thead fixed>
           <tr>
             {header.map((h) => (
-              <th onClick={()=>handleSort()}>{h}</th>
+              <th key={h} onClick={()=>handleSort()}>{h}</th>
             ))}
             {showDelete && <th></th>}
           </tr>

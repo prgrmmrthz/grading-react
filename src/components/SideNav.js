@@ -35,7 +35,7 @@ export default function SideNav() {
               <div>
                 <div className="sb-sidenav-menu-heading">{v.group}</div>
                 {v.links2.map((l) => (
-                  <Link
+                  <Link key={l.link}
                     className="nav-link collapsed"
                     to={l.link}
                     data-toggle="collapse"

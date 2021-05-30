@@ -1,4 +1,4 @@
-import { Card, Button, Container, Row, Col, Spinner } from "react-bootstrap";
+import { Card, Container, Row, Col, Spinner } from "react-bootstrap";
 import MyTable from "../MyTable";
 import MyModal from "../MyModal";
 import DateFromTo from "../DateFromTo";
@@ -25,13 +25,13 @@ const MyUI = ({
     <div>
       <Card>
         <Card.Header>
-          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <div><i class="fas fa-cash-register mr-4"></i> Adjusted Stocks</div>
-            <div class="btn-toolbar mb-2 mb-md-0">
+          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div><i className="fas fa-cash-register mr-4"></i> Adjusted Stocks</div>
+            <div className="btn-toolbar mb-2 mb-md-0">
 
-              <div class="btn-group mr-2">
-                <button class="btn btn-sm btn-success" onClick={()=>onPrint()}>
-                  <i class="far fa-save mr-1"></i>Print
+              <div className="btn-group mr-2">
+                <button className="btn btn-sm btn-success" onClick={()=>onPrint()}>
+                  <i className="far fa-save mr-1"></i>Print
                 </button>
               </div>
             </div>
