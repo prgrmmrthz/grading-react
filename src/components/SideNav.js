@@ -12,7 +12,7 @@ export default function SideNav() {
         { text: "Suppliers", link: "/suppliers" },
         { text: "Stock Adjustment", link: "/stock-adjustment" },
         { text: "Adjusted Stock", link: "/adjusted-stock" },
-        { text: "Stock-In", link: "/stock-in" },
+        { text: "Stock-In-Entry", link: "/stock-in-entry" },
       ],
     },
   ]);

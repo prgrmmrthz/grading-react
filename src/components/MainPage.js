@@ -13,11 +13,11 @@ import Dashboard from "./Dashboard";
 import Suppliers from "./Suppliers";
 import StockAdjustment from "./StockAdjustment";
 import AdjustedStock from "./AdjustedStock";
-import StockIn from "./StockIn";
 import Login from "./Login";
 import { AuthContext } from "../context/AuthContext";
 import Protected from "./Protected";
 import NotFound from "./NotFound";
+import StockInEntry from "./StockInEntry";
 
 function MainPage() {
   const [auth, setAuth] = useContext(AuthContext);
@@ -44,8 +44,8 @@ function MainPage() {
               <Route exact path="/adjusted-stock">
                 <Protected cmp={AdjustedStock} />
               </Route>
-              <Route exact path="/stock-in">
-                <Protected cmp={StockIn} />
+              <Route exact path="/stock-in-entry">
+                <Protected cmp={StockInEntry} />
               </Route>
               <Route exact path="/suppliers">
                 <Protected cmp={Suppliers} />

@@ -3,7 +3,7 @@ import { Table, Button } from "react-bootstrap";
 
 export default function MyTable({ header, data, handleOnEdit, handleOnDelete, handleSort, showDelete }) {
   return (
-    <div>
+    <div className="tableFixHead  ">
       <Table
         striped
         bordered
@@ -11,7 +11,7 @@ export default function MyTable({ header, data, handleOnEdit, handleOnDelete, ha
         size="sm"
         responsive="sm"
       >
-        <thead fixed>
+        <thead className="thead-dark">
           <tr>
             {header.map((h) => (
               <th key={h} onClick={()=>handleSort()}>{h}</th>
