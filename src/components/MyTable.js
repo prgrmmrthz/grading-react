@@ -14,7 +14,7 @@ export default function MyTable({ header, data, handleOnEdit, handleOnDelete, ha
         <thead className="thead-dark">
           <tr>
             {header.map((h) => (
-              <th key={h} onClick={()=>handleSort()}>{h}</th>
+              <th key={h} onClick={()=>handleSort()}>{h.toString().toUpperCase()}</th>
             ))}
             {showDelete && <th></th>}
           </tr>

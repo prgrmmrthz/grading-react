@@ -5,6 +5,7 @@ import SearchBar from "../SearchBar";
 import MyForm from "./MyForm";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { useState } from "react";
+import MyDropDown from "../MyDropDown";
 
 function filterBy(option, state) {
   if (state.selected.length) {
@@ -42,6 +43,10 @@ const MyUI = ({
   handleOnDelete,
   handleSelection,
   refnum,
+  supplierData,
+  handleOnSelectProductToStock,
+  headerStockIn,
+  stockindata,
 }) => {
   const [selected, setSelected] = useState([]);
 
@@ -84,28 +89,15 @@ const MyUI = ({
                   <MyTable
                     header={header}
                     data={data}
-                    handleOnEdit={handleOnEdit}
+                    handleOnEdit={handleOnSelectProductToStock}
                     handleOnDelete={handleOnDelete}
                     handleSort={handleSort}
                     showDelete={false}
                   />
                 </Col>
                 <Col xs={3}>
-                  <Typeahead
-                    filterBy={filterBy}
-                    id="toggle-example"
-                    options={data}
-                    placeholder="Choose a state..."
-                  >
-                    {({ isMenuShown, toggleMenu }) => (
-                      <ToggleButton
-                        isOpen={isMenuShown}
-                        onClick={(e) => toggleMenu()}
-                      />
-                    )}
-                  </Typeahead>
+                  <MyDropDown options={supplierData} title="Supplier" />
                   <hr />
-                  <br />
                   <MyForm
                     preloadedValues={formValues}
                     onSubmit={onSubmit}
@@ -117,12 +109,12 @@ const MyUI = ({
               <Row>
                 <Col>
                   <MyTable
-                    header={header}
-                    data={data}
+                    header={headerStockIn}
+                    data={stockindata}
                     handleOnEdit={handleOnEdit}
                     handleOnDelete={handleOnDelete}
                     handleSort={handleSort}
-                    showDelete={false}
+                    showDelete={true}
                   />
                 </Col>
               </Row>
@@ -130,13 +122,6 @@ const MyUI = ({
           </Card.Text>
         </Card.Body>
       </Card>
-
-      <MyModal
-        openModal={openModal}
-        setOpenModal={setOpenModal}
-        title={mode === 1 ? "New" : "Edit"}
-        size="md"
-      ></MyModal>
     </div>
   );
 };
