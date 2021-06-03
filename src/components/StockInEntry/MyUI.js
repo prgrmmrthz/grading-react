@@ -7,26 +7,6 @@ import { Typeahead } from "react-bootstrap-typeahead";
 import { useState } from "react";
 import MyDropDown from "../MyDropDown";
 
-function filterBy(option, state) {
-  if (state.selected.length) {
-    return true;
-  }
-  return option.name.toLowerCase().indexOf(state.text.toLowerCase()) > -1;
-}
-
-const ToggleButton = ({ isOpen, onClick }) => (
-  <button
-    className="toggle-button"
-    onClick={onClick}
-    onMouseDown={(e) => {
-      // Prevent input from losing focus.
-      e.preventDefault();
-    }}
-  >
-    {isOpen ? "▲" : "▼"}
-  </button>
-);
-
 const MyUI = ({
   onNew,
   handleSearch,
@@ -47,13 +27,32 @@ const MyUI = ({
   handleOnSelectProductToStock,
   headerStockIn,
   stockindata,
+  handleOnSelectStock,
+  handleOnSelectSupplier,
+  selectedSupplier,
 }) => {
   const [selected, setSelected] = useState([]);
 
   return (
     <div className="fluid">
       <Card>
-        <Card.Header>STOCK IN (RECIEVING) ENTRY</Card.Header>
+        <Card.Header>
+          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div>
+              <i className="mr-4"></i>STOCK IN (RECIEVING) ENTRY
+            </div>
+            <div className="btn-toolbar mb-2 mb-md-0">
+              <div className="btn-group mr-2">
+                <button
+                  className="btn btn-sm btn-success"
+                  onClick={() => {}}
+                >
+                  <i className="far fa-save mr-1"></i>Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </Card.Header>
         <Card.Body>
           <Card.Title>
             <p>
@@ -96,12 +95,17 @@ const MyUI = ({
                   />
                 </Col>
                 <Col xs={3}>
-                  <MyDropDown options={supplierData} title="Supplier" />
+                  Supplier: {selectedSupplier ? selectedSupplier.name : ""}
+                  <MyDropDown
+                    options={supplierData}
+                    handleOnSelect={handleOnSelectSupplier}
+                  />
                   <hr />
                   <MyForm
                     preloadedValues={formValues}
                     onSubmit={onSubmit}
                     loading={loading}
+                    mode={mode}
                   />
                 </Col>
               </Row>
@@ -111,7 +115,7 @@ const MyUI = ({
                   <MyTable
                     header={headerStockIn}
                     data={stockindata}
-                    handleOnEdit={handleOnEdit}
+                    handleOnEdit={handleOnSelectStock}
                     handleOnDelete={handleOnDelete}
                     handleSort={handleSort}
                     showDelete={true}

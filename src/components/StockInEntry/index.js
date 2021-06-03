@@ -20,6 +20,8 @@ export default function StockInEntry() {
   const [refnum, setRefNum] = useState(0);
   const [tranId, setTranId] = useState(0);
   const [productId, setProductId] = useState(0);
+  const [selectedSupplier, setselectedSupplier] = useState({});
+  const [editStockInId, seteditStockInId] = useState(0);
 
   const retrieveData = async (term = "") => {
     const request = {
@@ -40,7 +42,7 @@ export default function StockInEntry() {
 
   const retrieveStockInData = async (id) => {
     const request = {
-      cols: "sd.id,sd.reference_number,p.name as product,sd.qty",
+      cols: "sd.id,sd.reference_number,p.name as product,sd.qty,p.barcode,p.qty as productqty ",
       table: "stock_in_det sd",
       order: "sd.updatedAt desc",
       join: "left join products p on p.id = sd.product",
@@ -128,13 +130,32 @@ export default function StockInEntry() {
 
   const handleOnSelectProductToStock = (d) => {
     //console.debug(d);
+    setMode(1);
     setFormValues(d);
     setProductId(d.id);
+  };
+
+  const handleOnSelectStock = ({id,barcode,product,productqty,qty}) => {
+    setMode(2);
+    seteditStockInId(id);
+    const a = {
+      barcode,
+      name: product,
+      qty: productqty,
+      stockinqty: qty
+    }
+    setFormValues(a);
+    //setProductId(d.id);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
     retrieveData(e.target[0].value);
+  };
+
+  const handleOnSelectSupplier = (id,name) => {
+    //console.debug(d);
+    setselectedSupplier({id,name});
   };
 
   const handleSort = () => {
@@ -156,11 +177,16 @@ export default function StockInEntry() {
     setData([...a]);
   };
 
-  const onSubmitProductToStock = async ({ stockinqty, id }, e) => {
+  const onSubmitProductToStock = async ({ stockinqty }, e) => {
     setLoading(true);
     //prefnum varchar(255), pproduct int, pqty int, pstock_in_id int
-    const a = { fn: `addProductToStockIn(${refnum},${productId},${stockinqty},${tranId})` };
-    const response = await api.post("/callSP", a).catch((err) => {
+    let p = '';
+    if(mode===1){
+      p=`addProductToStockIn(${refnum},${productId},${stockinqty},${tranId})`;
+    }else if(mode===2){
+      p=`editProductStockIn(${editStockInId},${stockinqty})`
+    }
+    const response = await api.post("/callSP", {fn: p}).catch((err) => {
       setLoading(false);
       alert("cannot save!");
     });
@@ -208,6 +234,9 @@ export default function StockInEntry() {
       headerStockIn={headerStockIn}
       stockindata={stockindata}
       handleOnDelete={handleOnDelete}
+      handleOnSelectStock={handleOnSelectStock}
+      handleOnSelectSupplier={handleOnSelectSupplier}
+      selectedSupplier={selectedSupplier}
     />
   );
 }

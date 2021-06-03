@@ -44,16 +44,9 @@ const CustomMenu = React.forwardRef(
   }
 );
 
-const MyDropDown = ({options, title}) => {
-  const [selected, setSelected] =useState('');
-  const handleSelect = (id,name) => {
-    console.debug(id,name);
-    setSelected(name);
-  }
-
+const MyDropDown = ({options,handleOnSelect}) => {
   return (
     <div>
-      {title}: {selected}
       <Dropdown>
         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
           Change
@@ -61,7 +54,7 @@ const MyDropDown = ({options, title}) => {
 
         <Dropdown.Menu as={CustomMenu}>
           {options.map((o) => (
-            <Dropdown.Item onClick={(event)=>handleSelect(o.id,o.name)} eventKey={o.id}>{o.name}</Dropdown.Item>
+            <Dropdown.Item onClick={(event)=>handleOnSelect(o.id,o.name)} eventKey={o.id}>{o.name}</Dropdown.Item>
           ))}
         </Dropdown.Menu>
       </Dropdown>

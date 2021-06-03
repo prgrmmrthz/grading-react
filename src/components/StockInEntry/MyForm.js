@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-export default function MyForm({ preloadedValues, onSubmit, loading }) {
+export default function MyForm({ preloadedValues, onSubmit, loading, mode }) {
   const schema = yup.object().shape({
     stockinqty: yup.number().integer().positive().moreThan(0).required()
   });
@@ -21,11 +21,11 @@ export default function MyForm({ preloadedValues, onSubmit, loading }) {
   useEffect(() => {
     //console.debug(preloadedValues);
     if (preloadedValues) {
-      const { name,barcode,qty } = preloadedValues;
+      const { name,barcode,qty,stockinqty } = preloadedValues;
       setValue('name', name);
       setValue('barcode', barcode);
       setValue('qty', qty);
-      setValue('stockinqty', 0);
+      setValue('stockinqty', stockinqty || 0);
     }
   }, [preloadedValues]);
 
@@ -67,6 +67,7 @@ export default function MyForm({ preloadedValues, onSubmit, loading }) {
           type="number"
           name="stockinqty"
           placeholder="Enter QTY to stock"
+          autoFocus
           {...register("stockinqty")}
         />
         <p>{errors.stockinqty?.message}</p>
@@ -81,7 +82,7 @@ export default function MyForm({ preloadedValues, onSubmit, loading }) {
             aria-hidden="true"
           />
         )}
-        {loading ? "  Loading..." : "  Submit"}
+        {loading ? "  Loading..." : `[${mode===1 ? 'NEW' : 'EDIT'}] Submit`}
       </Button>
     </Form>
   );

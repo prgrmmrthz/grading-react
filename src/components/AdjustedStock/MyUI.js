@@ -26,7 +26,7 @@ const MyUI = ({
       <Card>
         <Card.Header>
           <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <div><i className="fas fa-cash-register mr-4"></i> Adjusted Stocks</div>
+            <div><i className="mr-4"></i> Adjusted Stocks</div>
             <div className="btn-toolbar mb-2 mb-md-0">
 
               <div className="btn-group mr-2">
