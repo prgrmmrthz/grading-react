@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import api from "../../api/supplier";
 import { AuthContext } from "../../context/AuthContext";
 import MyUI from "./MyUI";
-import { v1 as uuidv1 } from 'uuid';
+import { v1 as uuidv1 } from "uuid";
 
 export default function StockInEntry() {
+  const history = useHistory();
   const [auth, setAuth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAsc, setIsAsc] = useState(false);
-  const header = ["name", "barcode",'unit','qty','classification'];
+  const header = ["name", "barcode", "unit", "qty", "classification"];
   //sd.reference_number,p.name as product,sd.qty
-  const headerStockIn = ["reference_number", "product",'qty'];
+  const headerStockIn = ["reference_number", "product", "qty"];
   const [data, setData] = useState([]);
   const [stockindata, setstockindata] = useState([]);
   const [supplierData, setsupplierData] = useState([]);
@@ -22,14 +24,29 @@ export default function StockInEntry() {
   const [productId, setProductId] = useState(0);
   const [selectedSupplier, setselectedSupplier] = useState({});
   const [editStockInId, seteditStockInId] = useState(0);
+  const [remarks, setRemarks] = useState("");
+
+  useEffect(() => {
+    retrieveSuppliers();
+    retrievePreviousTransaction();
+    return () => {
+      setsupplierData([]);
+      setData([]);
+      setstockindata([]);
+    }
+  }, []);
 
   const retrieveData = async (term = "") => {
     const request = {
-      cols: "p.id,p.barcode,p.name,u.name as unit,p.qty,c.name as classification",
+      cols:
+        "p.id,p.barcode,p.name,u.name as unit,p.qty,c.name as classification",
       table: "products p",
       order: "p.updatedAt desc",
-      join: "left join units u on u.id=p.unit left join classifications c on c.id=p.class_id",
-      wc: term ? `p.name like '%${term}%' or p.barcode like '%${term}%' or c.name like '%${term}%'` : "",
+      join:
+        "left join units u on u.id=p.unit left join classifications c on c.id=p.class_id",
+      wc: term
+        ? `p.name like '%${term}%' or p.barcode like '%${term}%' or c.name like '%${term}%'`
+        : "",
       limit: "",
     };
     const response = await api.post("/getDataWithJoinClause", request);
@@ -42,7 +59,8 @@ export default function StockInEntry() {
 
   const retrieveStockInData = async (id) => {
     const request = {
-      cols: "sd.id,sd.reference_number,p.name as product,sd.qty,p.barcode,p.qty as productqty ",
+      cols:
+        "sd.id,sd.reference_number,p.name as product,sd.qty,p.barcode,p.qty as productqty ",
       table: "stock_in_det sd",
       order: "sd.updatedAt desc",
       join: "left join products p on p.id = sd.product",
@@ -70,7 +88,7 @@ export default function StockInEntry() {
     //console.log("response", response);
     if (response["data"]) {
       setLoading(false);
-      setsupplierData(response["data"]);
+      setsupplierData([...response["data"]]);
     }
   };
 
@@ -85,16 +103,16 @@ export default function StockInEntry() {
     };
     const response = await api.post("/getDataWithJoinClause", request);
     //console.log("response", response);
-    const a= response["data"][0] ;
+    const a = response["data"][0];
     if (a) {
-      const {reference_number,id} = a;
+      const { reference_number, id } = a;
       retrieveData();
       setRefNum(reference_number);
       setTranId(id);
       retrieveStockInData(id);
       setLoading(false);
       alert("retrieved previous transaction");
-    }else{
+    } else {
       createNewStockInId();
     }
   };
@@ -106,27 +124,20 @@ export default function StockInEntry() {
       setLoading(false);
       alert("cannot create stock id!");
     });
-    const {idX,refnum} = response["data"][0];
-    console.debug(idX);
     //setLoading(false);
-    if (idX != 0) {
+    if (response) {
+      const { idX, refnum } = response["data"][0];
       retrieveData();
       setTranId(idX);
       setRefNum(refnum);
       setLoading(false);
       retrieveStockInData(idX);
       alert("new transaction");
-    } else{
+    } else {
       alert("cannot create stock id!");
-      window.location.reload();
+      history.push("/login");
     }
-
   };
-
-  useEffect(() => {
-    retrieveSuppliers();
-    retrievePreviousTransaction();
-  }, []);
 
   const handleOnSelectProductToStock = (d) => {
     //console.debug(d);
@@ -135,15 +146,15 @@ export default function StockInEntry() {
     setProductId(d.id);
   };
 
-  const handleOnSelectStock = ({id,barcode,product,productqty,qty}) => {
+  const handleOnSelectStock = ({ id, barcode, product, productqty, qty }) => {
     setMode(2);
     seteditStockInId(id);
     const a = {
       barcode,
       name: product,
       qty: productqty,
-      stockinqty: qty
-    }
+      stockinqty: qty,
+    };
     setFormValues(a);
     //setProductId(d.id);
   };
@@ -153,9 +164,9 @@ export default function StockInEntry() {
     retrieveData(e.target[0].value);
   };
 
-  const handleOnSelectSupplier = (id,name) => {
+  const handleOnSelectSupplier = (id, name) => {
     //console.debug(d);
-    setselectedSupplier({id,name});
+    setselectedSupplier({ id, name });
   };
 
   const handleSort = () => {
@@ -180,13 +191,13 @@ export default function StockInEntry() {
   const onSubmitProductToStock = async ({ stockinqty }, e) => {
     setLoading(true);
     //prefnum varchar(255), pproduct int, pqty int, pstock_in_id int
-    let p = '';
-    if(mode===1){
-      p=`addProductToStockIn(${refnum},${productId},${stockinqty},${tranId})`;
-    }else if(mode===2){
-      p=`editProductStockIn(${editStockInId},${stockinqty})`
+    let p = "";
+    if (mode === 1) {
+      p = `addProductToStockIn(${refnum},${productId},${stockinqty},${tranId})`;
+    } else if (mode === 2) {
+      p = `editProductStockIn(${editStockInId},${stockinqty})`;
     }
-    const response = await api.post("/callSP", {fn: p}).catch((err) => {
+    const response = await api.post("/callSP", { fn: p }).catch((err) => {
       setLoading(false);
       alert("cannot save!");
     });
@@ -195,7 +206,30 @@ export default function StockInEntry() {
       alert("saved");
       console.debug(response);
       retrieveStockInData(tranId);
-    } else{
+    } else {
+      setLoading(false);
+      alert("cannot save!");
+    }
+  };
+
+  const onSaveStockInTran = async () => {
+    setLoading(true);
+    const totalqty = stockindata.reduce((a, b) => a + b.qty, 0);
+    //pstockid int, psupplier int, pqty int, premarks varchar(100)
+    const p = `saveStockIn(${tranId},${selectedSupplier.id},${totalqty},'${remarks}')`;
+    const response = await api.post("/callSP", { fn: p }).catch((err) => {
+      setLoading(false);
+      alert("cannot save!");
+    });
+    if (response) {
+      if (response["data"][0].res === 1) {
+        setLoading(false);
+        alert("saved");
+        history.push('/adjusted-stock');
+        //console.debug(response);
+      }
+      //retrieveStockInData(tranId);
+    } else {
       setLoading(false);
       alert("cannot save!");
     }
@@ -237,6 +271,9 @@ export default function StockInEntry() {
       handleOnSelectStock={handleOnSelectStock}
       handleOnSelectSupplier={handleOnSelectSupplier}
       selectedSupplier={selectedSupplier}
+      remarks={remarks}
+      setRemarks={setRemarks}
+      onSaveStockInTran={onSaveStockInTran}
     />
   );
 }

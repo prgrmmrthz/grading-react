@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,10 +13,21 @@ export default function MyForm({ preloadedValues, onSubmit, loading, mode }) {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
+    setFocus,
+    reset,
+    formState: { errors, isSubmitSuccessful },
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const submitForm = (data) =>{
+    onSubmit(data);
+    reset();
+  }
+
+  const resetForm = (data) =>{
+    reset();
+  }
 
   useEffect(() => {
     //console.debug(preloadedValues);
@@ -25,12 +36,13 @@ export default function MyForm({ preloadedValues, onSubmit, loading, mode }) {
       setValue('name', name);
       setValue('barcode', barcode);
       setValue('qty', qty);
-      setValue('stockinqty', stockinqty || 0);
+      setValue('stockinqty', stockinqty);
+      setFocus('stockinqty');
     }
   }, [preloadedValues]);
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(submitForm)}>
       <Form.Group>
         <Form.Label>Product</Form.Label>
         <Form.Control
@@ -67,7 +79,6 @@ export default function MyForm({ preloadedValues, onSubmit, loading, mode }) {
           type="number"
           name="stockinqty"
           placeholder="Enter QTY to stock"
-          autoFocus
           {...register("stockinqty")}
         />
         <p>{errors.stockinqty?.message}</p>
@@ -83,6 +94,9 @@ export default function MyForm({ preloadedValues, onSubmit, loading, mode }) {
           />
         )}
         {loading ? "  Loading..." : `[${mode===1 ? 'NEW' : 'EDIT'}] Submit`}
+      </Button> &nbsp;
+      <Button size="sm" variant="secondary" onClick={()=> resetForm()}>
+        Reset
       </Button>
     </Form>
   );

@@ -30,6 +30,9 @@ const MyUI = ({
   handleOnSelectStock,
   handleOnSelectSupplier,
   selectedSupplier,
+  remarks,
+  setRemarks,
+  onSaveStockInTran
 }) => {
   const [selected, setSelected] = useState([]);
 
@@ -37,16 +40,13 @@ const MyUI = ({
     <div className="fluid">
       <Card>
         <Card.Header>
-          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
             <div>
               <i className="mr-4"></i>STOCK IN (RECIEVING) ENTRY
             </div>
             <div className="btn-toolbar mb-2 mb-md-0">
               <div className="btn-group mr-2">
-                <button
-                  className="btn btn-sm btn-success"
-                  onClick={() => {}}
-                >
+                <button className="btn btn-sm btn-success" disabled={!remarks && !selectedSupplier} onClick={() => onSaveStockInTran()}>
                   <i className="far fa-save mr-1"></i>Save
                 </button>
               </div>
@@ -95,7 +95,18 @@ const MyUI = ({
                   />
                 </Col>
                 <Col xs={3}>
-                  Supplier: {selectedSupplier ? selectedSupplier.name : ""}
+                  <div>
+                    Remarks:{" "}
+                    <input
+                      onBlur={(e)=>setRemarks(e.target.value)}
+                      type="text"
+                      placeholder="input remarks"
+                      style={{ width: "300px" }}
+                    />
+                  </div>
+                  <div>
+                    Supplier: {selectedSupplier ? selectedSupplier.name : ""}
+                  </div>
                   <MyDropDown
                     options={supplierData}
                     handleOnSelect={handleOnSelectSupplier}
