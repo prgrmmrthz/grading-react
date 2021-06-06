@@ -8,23 +8,24 @@ export default function StockInRecievingList() {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAsc, setIsAsc] = useState(false);
-  const header = ["id", "product", "unit", "qty", "reason", "date", "adjustedBy"];
+  const header = ['reference_number','supplier','qty','updatedAt','createdAt','remarks','user'];
   const [data, setData] = useState([]);
   const [formValues] = useState({});
   const [mode] = useState(1);
+  const [filterDate, setFilterDate] = useState({from: new Date(), to: new Date()});
 
   const retrieveData = async (from, to) => {
     const request = {
       cols:
-        "sa.id,p.name as product,u.name as unit,sa.adjust_qty as qty,sa.reason,DATE_FORMAT(sa.updatedAt,'%m-%d-%Y') as date, a.name as adjustedBy",
-      table: "stock_adjustment sa",
-      order: "sa.updatedAt desc",
+        "si.reference_number,s.name as supplier,si.qty,si.createdAt,si.updatedAt,a.name as user,si.status,si.remarks",
+      table: "stock_in si",
+      order: "si.updatedAt desc",
       join:
-        "left join products p on p.id=sa.product left join units u on u.id=p.unit left join user a on a.id=sa.user",
+        "left join suppliers s on s.id=si.supplier left join user a on a.id=si.user",
       wc:
         from && to
-          ? `sa.updatedAt >= '${cd(from)}' and sa.updatedAt <= '${cd(to)}'`
-          : "DATE(sa.updatedAt) = CURDATE()",
+          ? `si.createdAt >= '${cd(from)}' and si.createdAt <= '${cd(to)}'`
+          : "DATE(si.createdAt) = CURDATE()",
       limit: "",
     };
     const response = await api.post("/getDataWithJoinClause", request);
@@ -45,16 +46,20 @@ export default function StockInRecievingList() {
 
   useEffect(() => {
     retrieveData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOnEdit = (d) => {};
 
   const handleSearch = (e) => {
-
+    e.preventDefault();
+    const {from,to} = filterDate;
+    retrieveData(from,to);
   };
 
   const handleSelection = ({ startDate: f, endDate: t }) => {
     retrieveData(f, t);
+    //console.debug(f);
   };
 
   const handleSort = () => {
@@ -152,8 +157,6 @@ export default function StockInRecievingList() {
           pageHeight - 40
         );
         doc.setFontSize(8);
-        var pageHeight =
-          doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
         doc.text(str, dataToPrint.settings.margin.right, pageHeight - 10);
       },
     });
@@ -179,6 +182,8 @@ export default function StockInRecievingList() {
       handleSort={handleSort}
       handleSelection={handleSelection}
       onPrint={onPrint}
+      filterDate={filterDate}
+      setFilterDate={setFilterDate}
     />
   );
 }

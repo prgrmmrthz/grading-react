@@ -1,9 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import {
-  BrowserRouter as Router,
   Switch,
-  Route,
-  withRouter,
+  Route
 } from "react-router-dom";
 
 import SideNav from "./SideNav";
@@ -21,7 +19,7 @@ import StockInEntry from "./StockInEntry";
 import StockInRecievingList from "./StockInRecievingList";
 
 function MainPage() {
-  const [auth, setAuth] = useContext(AuthContext);
+  const [auth] = useContext(AuthContext);
 
   return (
     <div id="layoutSidenav">

@@ -33,6 +33,7 @@ export default function StockInEntry() {
       setData([]);
       setstockindata([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const retrieveData = async (term = "") => {

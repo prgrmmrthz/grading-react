@@ -2,8 +2,7 @@ import React, {useState } from "react";
 import { Dropdown, FormControl } from "react-bootstrap";
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-  <a
-    href=""
+  <button
     ref={ref}
     onClick={(e) => {
       e.preventDefault();
@@ -12,7 +11,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   >
     {children}
     &#x25bc;
-  </a>
+  </button>
 ));
 
 const CustomMenu = React.forwardRef(

@@ -45,6 +45,7 @@ export default function AdjustedStock() {
 
   useEffect(() => {
     retrieveData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOnEdit = (d) => {};
@@ -151,8 +152,6 @@ export default function AdjustedStock() {
           pageHeight - 40
         );
         doc.setFontSize(8);
-        var pageHeight =
-          doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
         doc.text(str, dataToPrint.settings.margin.right, pageHeight - 10);
       },
     });

@@ -20,7 +20,7 @@ export default function Login() {
     if (auth.isAuthenticated) {
       history.push("/dashboard");
     }
-  }, [auth.isAuthenticated]);
+  }, [auth.isAuthenticated, history]);
 
   const onSubmit = async ({ user, pword }) => {
     setLoading(true);
@@ -107,7 +107,7 @@ export default function Login() {
               </div>
               <div className="card-footer text-center">
                 <div className="small">
-                  <a href="#">Need an account? Sign up!</a>
+                  <button>Need an account? Sign up!</button>
                 </div>
               </div>
             </div>

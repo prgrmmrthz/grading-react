@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 export default function SideNav() {
-  const [auth, setAuth] = useContext(AuthContext);
+  const [auth] = useContext(AuthContext);
 
-  const [linksData, setlinksData] = useState([
+  const [linksData] = useState([
     {
       group: "Inventory",
       links2: [

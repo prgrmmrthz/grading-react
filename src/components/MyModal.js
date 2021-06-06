@@ -1,4 +1,4 @@
-import { Modal, Container } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
 const MyModal = ({ title, children, openModal, setOpenModal, size }) => {
   return (

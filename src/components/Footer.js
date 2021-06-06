@@ -6,11 +6,11 @@ export default function MyFooter() {
       <footer className="py-4 bg-light mt-auto">
         <div className="container-fluid">
           <div className="d-flex align-items-center justify-content-between small">
-            <div className="text-muted">Copyright &copy; Your Website 2020</div>
+            <div className="text-muted">Copyright &copy; Your Website 2021</div>
             <div>
-              <a>Privacy Policy</a>
+              <button>Privacy Policy</button>
               &middot;
-              <a>Terms &amp; Conditions</a>
+              <button>Terms &amp; Conditions</button>
             </div>
           </div>
         </div>

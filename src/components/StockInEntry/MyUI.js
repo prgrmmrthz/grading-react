@@ -2,24 +2,18 @@ import { Card, Container, Row, Col, Spinner } from "react-bootstrap";
 import MyTable from "../MyTable";
 import SearchBar from "../SearchBar";
 import MyForm from "./MyForm";
-import { useState } from "react";
 import MyDropDown from "../MyDropDown";
 
 const MyUI = ({
-  onNew,
   handleSearch,
   loading,
   header,
   data,
   handleSort,
-  handleOnEdit,
-  openModal,
-  setOpenModal,
   mode,
   formValues,
   onSubmit,
   handleOnDelete,
-  handleSelection,
   refnum,
   supplierData,
   handleOnSelectProductToStock,
@@ -32,8 +26,6 @@ const MyUI = ({
   setRemarks,
   onSaveStockInTran
 }) => {
-  const [selected, setSelected] = useState([]);
-
   return (
     <div className="fluid">
       <Card>
@@ -62,7 +54,7 @@ const MyUI = ({
                 style={{ width: "500px" }}
               />
             </p>
-            <Container>
+            <Container fluid>
               <Row>
                 <Col>
                   <br />

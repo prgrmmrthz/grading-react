@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import {useHistory} from 'react-router-dom';
 import { AuthContext } from "../context/AuthContext";
 const Protected = ({cmp}) => {
-    const [auth, setAuth] = useContext(AuthContext);
+    const [auth] = useContext(AuthContext);
     let Cmp = cmp;
     const history = useHistory();
 
@@ -10,7 +10,7 @@ const Protected = ({cmp}) => {
         if(!auth.isAuthenticated){
           history.push("/login")
         }
-      }, [])
+      }, [auth.isAuthenticated, history])
 
     return (
         <div>

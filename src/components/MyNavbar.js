@@ -1,10 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Navbar,
   Nav,
   Form,
-  FormControl,
   Dropdown,
   NavItem,
   NavLink,

@@ -4,14 +4,14 @@ import { AuthContext } from "../../context/AuthContext";
 import MyUI from "./MyUI";
 
 export default function StockAdjustment() {
-  const [auth, setAuth] = useContext(AuthContext);
+  const [auth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAsc, setIsAsc] = useState(false);
   const header = ["name", "barcode",'unit','qty'];
   const [data, setData] = useState([]);
   const [formValues, setFormValues] = useState({});
-  const [mode, setMode] = useState(1);
+  const [mode] = useState(1);
 
   const retrieveData = async (term = "") => {
     const request = {

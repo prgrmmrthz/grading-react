@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Button, Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -15,7 +15,7 @@ export default function MyForm({ preloadedValues, onSubmit, loading, mode }) {
     setValue,
     setFocus,
     reset,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
@@ -39,6 +39,7 @@ export default function MyForm({ preloadedValues, onSubmit, loading, mode }) {
       setValue('stockinqty', stockinqty);
       setFocus('stockinqty');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preloadedValues]);
 
   return (
