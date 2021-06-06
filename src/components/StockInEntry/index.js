@@ -3,11 +3,10 @@ import { useHistory } from "react-router-dom";
 import api from "../../api/supplier";
 import { AuthContext } from "../../context/AuthContext";
 import MyUI from "./MyUI";
-import { v1 as uuidv1 } from "uuid";
 
 export default function StockInEntry() {
   const history = useHistory();
-  const [auth, setAuth] = useContext(AuthContext);
+  const [auth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAsc, setIsAsc] = useState(false);
@@ -225,7 +224,7 @@ export default function StockInEntry() {
       if (response["data"][0].res === 1) {
         setLoading(false);
         alert("saved");
-        history.push('/adjusted-stock');
+        history.push('/stock-in-list');
         //console.debug(response);
       }
       //retrieveStockInData(tranId);

@@ -20,7 +20,7 @@ export default function Login() {
     if (auth.isAuthenticated) {
       history.push("/dashboard");
     }
-  }, []);
+  }, [auth.isAuthenticated]);
 
   const onSubmit = async ({ user, pword }) => {
     setLoading(true);

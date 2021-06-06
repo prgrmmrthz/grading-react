@@ -18,6 +18,7 @@ import { AuthContext } from "../context/AuthContext";
 import Protected from "./Protected";
 import NotFound from "./NotFound";
 import StockInEntry from "./StockInEntry";
+import StockInRecievingList from "./StockInRecievingList";
 
 function MainPage() {
   const [auth, setAuth] = useContext(AuthContext);
@@ -49,6 +50,9 @@ function MainPage() {
               </Route>
               <Route exact path="/suppliers">
                 <Protected cmp={Suppliers} />
+              </Route>
+              <Route exact path="/stock-in-list">
+                <Protected cmp={StockInRecievingList} />
               </Route>
               <Route path="*" component={NotFound} />
             </Switch>

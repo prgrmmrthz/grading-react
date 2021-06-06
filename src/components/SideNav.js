@@ -13,6 +13,7 @@ export default function SideNav() {
         { text: "Stock Adjustment", link: "/stock-adjustment" },
         { text: "Adjusted Stock", link: "/adjusted-stock" },
         { text: "Stock-In-Entry", link: "/stock-in-entry" },
+        { text: "Stock-In-List", link: "/stock-in-list" },
       ],
     },
   ]);
