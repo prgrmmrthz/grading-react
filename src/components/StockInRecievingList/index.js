@@ -1,31 +1,39 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
+import {stockindatacolumn, stockinlistcolumn} from './columns';
 var jsPDF = require("jspdf");
 require("jspdf-autotable");
 
 export default function StockInRecievingList() {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isAsc, setIsAsc] = useState(false);
-  const header = ['reference_number','supplier','qty','updatedAt','createdAt','remarks','user'];
+  const header = ['reference_number','supplier','qty','updated_At','created_At','remarks','user','status'];
+  const headerStockIn = ["product", "qty"];
   const [data, setData] = useState([]);
+  const [stockindata, setstockindata] = useState([]);
   const [formValues] = useState({});
   const [mode] = useState(1);
   const [filterDate, setFilterDate] = useState({from: new Date(), to: new Date()});
 
-  const retrieveData = async (from, to) => {
+  useEffect(() => {
+    retrieveData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const retrieveData = async (from, to, term) => {
+    const a = ` and (si.reference_number like '%${term}%' or s.name like '%${term}%' or remarks like '%${term}%')`
     const request = {
       cols:
-        "si.reference_number,s.name as supplier,si.qty,si.createdAt,si.updatedAt,a.name as user,si.status,si.remarks",
+        "si.id,si.reference_number,s.name as supplier,si.qty, si.createdAt,si.updatedAt,a.name as user,si.status,si.remarks,si.status",
       table: "stock_in si",
       order: "si.updatedAt desc",
       join:
         "left join suppliers s on s.id=si.supplier left join user a on a.id=si.user",
       wc:
         from && to
-          ? `si.createdAt >= '${cd(from)}' and si.createdAt <= '${cd(to)}'`
-          : "DATE(si.createdAt) = CURDATE()",
+          ? `si.createdAt >= '${cd(from)}' and si.createdAt <= '${cd(to)}' and si.status=1${term ? a: ""}`
+          : "DATE(si.createdAt) = CURDATE() and si.status=1",
       limit: "",
     };
     const response = await api.post("/getDataWithJoinClause", request);
@@ -44,17 +52,33 @@ export default function StockInRecievingList() {
     }`;
   };
 
-  useEffect(() => {
-    retrieveData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const retrieveStockInData = async (id) => {
+    const request = {
+      cols:
+        "sd.id,sd.reference_number,p.name as product,sd.qty,p.barcode,p.qty as productqty ",
+      table: "stock_in_det sd",
+      order: "sd.updatedAt desc",
+      join: "left join products p on p.id = sd.product",
+      wc: `sd.stock_in_id=${id}`,
+      limit: "",
+    };
+    const response = await api.post("/getDataWithJoinClause", request);
+    //console.log("response", response);
+    if (response["data"]) {
+      setLoading(false);
+      setstockindata(response["data"]);
+    }
+  };
 
-  const handleOnEdit = (d) => {};
+  const handleOnEdit = ({id}) => {
+    retrieveStockInData(id);
+    setOpenModal(true);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
     const {from,to} = filterDate;
-    retrieveData(from,to);
+    retrieveData(from,to,e.target[0].value);
   };
 
   const handleSelection = ({ startDate: f, endDate: t }) => {
@@ -62,23 +86,8 @@ export default function StockInRecievingList() {
     //console.debug(f);
   };
 
-  const handleSort = () => {
-    const a = data.sort((a, b) => {
-      setIsAsc(!isAsc);
-      var nameA = a.product.toUpperCase(); // ignore upper and lowercase
-      var nameB = b.product.toUpperCase(); // ignore upper and lowercase
-      if (nameA < nameB) {
-        return isAsc ? -1 : 1;
-      }
-      if (nameA > nameB) {
-        return isAsc ? 1 : -1;
-      }
+  const handleSort = (d) => {
 
-      // names must be equal
-      return 0;
-    });
-    //sconsole.debug(a);
-    setData([...a]);
   };
 
   const onSubmit = async ({ adjustqty, id, reason }, e) => {};
@@ -184,6 +193,10 @@ export default function StockInRecievingList() {
       onPrint={onPrint}
       filterDate={filterDate}
       setFilterDate={setFilterDate}
+      headerStockIn={headerStockIn}
+      stockindata={stockindata}
+      stockindatacolumn={stockindatacolumn}
+      stockinlistcolumn={stockinlistcolumn}
     />
   );
 }

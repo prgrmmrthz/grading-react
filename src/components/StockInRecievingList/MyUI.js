@@ -1,10 +1,10 @@
 import { Card, Container, Row, Col, Spinner } from "react-bootstrap";
 import MyTable from "../MyTable";
 import MyModal from "../MyModal";
-import MyForm from "./MyForm";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import SearchBar from "../SearchBar";
+import { MyTableV2 } from "../MyTableV2";
 
 const MyUI = ({
   onNew,
@@ -24,6 +24,10 @@ const MyUI = ({
   onPrint,
   setFilterDate,
   filterDate,
+  headerStockIn,
+  stockindata,
+  stockindatacolumn,
+  stockinlistcolumn,
 }) => {
   return (
     <div>
@@ -68,7 +72,7 @@ const MyUI = ({
                 <Col>
                   <SearchBar
                     handleSearch={handleSearch}
-                    placeholder="SEARCH PRODUCT | BARCODE"
+                    placeholder="SEARCH SUPPLIER | REFERENCE#"
                   />
                 </Col>
               </Row>
@@ -83,7 +87,7 @@ const MyUI = ({
                       <span className="sr-only">Loading...</span>
                     </Spinner>
                   )}
-                  <MyTable
+                  {/* <MyTable
                     header={header}
                     data={data}
                     handleOnEdit={handleOnEdit}
@@ -91,41 +95,18 @@ const MyUI = ({
                     handleSort={handleSort}
                     showDelete={false}
                   />
+                  <hr /> */}
+                  <MyTableV2 pcolumns={stockinlistcolumn} pdata={data} handleOnDblClick={handleOnEdit} />
                 </Col>
               </Row>
-              <Row>
-                <Col>
-                  {loading && (
-                    <Spinner animation="border" role="status">
-                      <span className="sr-only">Loading...</span>
-                    </Spinner>
-                  )}
-                  <MyTable
-                    header={header}
-                    data={data}
-                    handleOnEdit={handleOnEdit}
-                    handleOnDelete={handleOnDelete}
-                    handleSort={handleSort}
-                    showDelete={false}
-                  />
-                </Col>
-              </Row>
+              <br />
             </Container>
           </Card.Text>
         </Card.Body>
       </Card>
 
-      <MyModal
-        openModal={openModal}
-        setOpenModal={setOpenModal}
-        title={mode === 1 ? "New" : "Edit"}
-        size="md"
-      >
-        <MyForm
-          preloadedValues={formValues}
-          onSubmit={onSubmit}
-          loading={loading}
-        />
+      <MyModal openModal={openModal} setOpenModal={setOpenModal} size="xl">
+        <MyTableV2 pcolumns={stockindatacolumn} pdata={stockindata} />
       </MyModal>
     </div>
   );
