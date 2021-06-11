@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
 import {stockindatacolumn, stockinlistcolumn} from './columns';
-import { AuthContext } from "../../context/AuthContext";
+//import { AuthContext } from "../../context/AuthContext";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { numberWithCommas } from "../../utils/format";
 
 export default function StockInRecievingList() {
-  const [auth] = useContext(AuthContext);
+  //const [auth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const header = ['reference_number','supplier','qty','updated_At','created_At','remarks','user','status'];
@@ -102,7 +102,7 @@ export default function StockInRecievingList() {
   };
 
   const onPrintStockInDetails = () => {
-    const {id,reference_number,qty,createdAt,user,supplier} = selectedStockInDetails;
+    const {qty,createdAt,user,supplier} = selectedStockInDetails;
     const dataPrint = stockindata.map((v) => {
       const { product, qty } = v;
       return {
@@ -133,7 +133,7 @@ export default function StockInRecievingList() {
       margin: { top: 160 },
       columnStyles: {
         qty: {
-          halign: "right",
+          halign: "center",
           fontStyle: "bold",
         },
         /*         totalrelease: {
@@ -164,10 +164,12 @@ export default function StockInRecievingList() {
         var pageHeight =
           doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
         doc.text(
-          "Created by: "+user,
+          "User: "+user,
           dataToPrint.settings.margin.right,
           pageHeight - 40
         );
+        doc.setFontSize(8);
+        doc.text(str, dataToPrint.settings.margin.right, pageHeight - 10);
       },
     });
     if (typeof doc.putTotalPages === "function") {

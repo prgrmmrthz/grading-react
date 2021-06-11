@@ -48,7 +48,7 @@ export const stockinlistcolumn = [
     accessor: "remarks",
   },
   {
-    Header: "Created By",
+    Header: "User",
     accessor: "user",
   },
   {
