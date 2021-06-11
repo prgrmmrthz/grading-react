@@ -1,11 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTable, useSortBy } from "react-table";
 import { Table } from "react-bootstrap";
 
 export const MyTableV2 = ({ pcolumns, pdata, handleOnDblClick }) => {
   const columns = useMemo(() => pcolumns, [pcolumns]);
   const data = useMemo(() => pdata, [pdata]);
-  const [selected, setselected] = useState(null);
 
   const tableInstance = useTable(
     {

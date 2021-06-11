@@ -5,13 +5,9 @@ const MyModal = ({ title, children, openModal, setOpenModal, size }) => {
     <div className="portfolio-modal">
       <Modal size={size} show={openModal} onHide={setOpenModal}>
         <Modal.Header closeButton>
-          <Modal.Title>
-              {title}
-          </Modal.Title>
+          <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          {children}
-        </Modal.Body>
+        <Modal.Body>{children}</Modal.Body>
       </Modal>
     </div>
   );

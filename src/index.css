@@ -10668,3 +10668,8 @@ body {
   top: 0;
   z-index: 0;
 }
+
+/* table custom class */
+.right {
+  text-align: right;
+}

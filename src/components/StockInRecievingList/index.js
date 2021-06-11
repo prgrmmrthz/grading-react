@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
 import {stockindatacolumn, stockinlistcolumn} from './columns';
-var jsPDF = require("jspdf");
-require("jspdf-autotable");
+import { AuthContext } from "../../context/AuthContext";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { numberWithCommas } from "../../utils/format";
 
 export default function StockInRecievingList() {
+  const [auth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const header = ['reference_number','supplier','qty','updated_At','created_At','remarks','user','status'];
   const headerStockIn = ["product", "qty"];
   const [data, setData] = useState([]);
   const [stockindata, setstockindata] = useState([]);
+  const [selectedStockInDetails, setselectedStockInDetails] = useState(null);
   const [formValues] = useState({});
   const [mode] = useState(1);
   const [filterDate, setFilterDate] = useState({from: new Date(), to: new Date()});
@@ -70,8 +74,9 @@ export default function StockInRecievingList() {
     }
   };
 
-  const handleOnEdit = ({id}) => {
+  const handleOnEdit = ({id,reference_number,qty,createdAt,user,supplier}) => {
     retrieveStockInData(id);
+    setselectedStockInDetails({reference_number,qty,createdAt,user,supplier});
     setOpenModal(true);
   };
 
@@ -93,26 +98,21 @@ export default function StockInRecievingList() {
   const onSubmit = async ({ adjustqty, id, reason }, e) => {};
 
   const onPrint = () => {
-    const dataPrint = data.map((v) => {
-      const { id, product, unit, qty, reason, date, adjustedBy } = v;
+
+  };
+
+  const onPrintStockInDetails = () => {
+    const {id,reference_number,qty,createdAt,user,supplier} = selectedStockInDetails;
+    const dataPrint = stockindata.map((v) => {
+      const { product, qty } = v;
       return {
-        id,
         product,
-        unit,
-        qty,
-        reason,
-        date,
-        adjustedBy
+        qty: numberWithCommas(Number(qty))
       };
     });
     var columns = [
-      { title: "Tran#", dataKey: "id" },
       { title: "Product", dataKey: "product" },
-      { title: "Unit", dataKey: "unit" },
-      { title: "Qty", dataKey: "qty" },
-      { title: "Reason", dataKey: "reason" },
-      { title: "Date", dataKey: "date" },
-      { title: "Adjusted By", dataKey: "adjustedBy" },
+      { title: "Qty", dataKey: "qty" }
     ];
     var doc = new jsPDF("p", "pt", "letter");
     var totalPagesExp = "{total_pages_count_string}";
@@ -132,25 +132,28 @@ export default function StockInRecievingList() {
       },
       margin: { top: 160 },
       columnStyles: {
-        ordertotal: {
+        qty: {
           halign: "right",
           fontStyle: "bold",
-        },
-        id: {
-          halign: "center",
-          columnWidth: 40,
         },
         /*         totalrelease: {
           halign: 'right',
           columnWidth: 60
         } */
       },
+      createdCell: function(cell, opts){
+
+      },
       didDrawPage: function (dataToPrint) {
         //console.debug(dataPrint);
-        doc.setFontSize(18);
-        doc.text(`Adjusted Stocks Report`, 40, 80);
-        doc.setFontSize(12);
-        doc.text(`Date Printed: ${new Date().toLocaleDateString()}`, 40, 100);
+        doc.setFontSize(14);
+        doc.text(`STOCK IN / STOCK RECIEVING`, 40, 80);
+        doc.setFontSize(10);
+        doc.text(`Supplier: ${supplier}`, 40, 100);
+        doc.setFontSize(10);
+        doc.text(`Date: ${new Date(createdAt).toLocaleDateString()}`, 40, 113);
+        doc.setFontSize(10);
+        doc.text(`Total Stocks: ${numberWithCommas(Number(qty))}`, 40, 126);
         // FOOTER
         var str = "Page " + dataToPrint.pageCount;
         // Total page number plugin only available in jspdf v1.0+
@@ -161,12 +164,10 @@ export default function StockInRecievingList() {
         var pageHeight =
           doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
         doc.text(
-          "Printed by: AAA ",
+          "Created by: "+user,
           dataToPrint.settings.margin.right,
           pageHeight - 40
         );
-        doc.setFontSize(8);
-        doc.text(str, dataToPrint.settings.margin.right, pageHeight - 10);
       },
     });
     if (typeof doc.putTotalPages === "function") {
@@ -197,6 +198,8 @@ export default function StockInRecievingList() {
       stockindata={stockindata}
       stockindatacolumn={stockindatacolumn}
       stockinlistcolumn={stockinlistcolumn}
+      onPrintStockInDetails={onPrintStockInDetails}
+      selectedStockInDetails={selectedStockInDetails}
     />
   );
 }

@@ -1,5 +1,4 @@
-import { Card, Container, Row, Col, Spinner } from "react-bootstrap";
-import MyTable from "../MyTable";
+import { Card, Container, Row, Col, Spinner, Button } from "react-bootstrap";
 import MyModal from "../MyModal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -28,6 +27,8 @@ const MyUI = ({
   stockindata,
   stockindatacolumn,
   stockinlistcolumn,
+  onPrintStockInDetails,
+  selectedStockInDetails
 }) => {
   return (
     <div>
@@ -96,7 +97,11 @@ const MyUI = ({
                     showDelete={false}
                   />
                   <hr /> */}
-                  <MyTableV2 pcolumns={stockinlistcolumn} pdata={data} handleOnDblClick={handleOnEdit} />
+                  <MyTableV2
+                    pcolumns={stockinlistcolumn}
+                    pdata={data}
+                    handleOnDblClick={handleOnEdit}
+                  />
                 </Col>
               </Row>
               <br />
@@ -105,7 +110,20 @@ const MyUI = ({
         </Card.Body>
       </Card>
 
-      <MyModal openModal={openModal} setOpenModal={setOpenModal} size="xl">
+      <MyModal
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        size="xl"
+        title={selectedStockInDetails ? `Reference#: ${selectedStockInDetails.reference_number}` : ''}
+      >
+        <div className="d-flex justify-content-end">
+          <Button variant="success" onClick={() => onPrintStockInDetails()}>
+            Print
+          </Button>
+          &nbsp;
+          <Button variant="primary">Cancel this Transaction</Button>
+        </div>
+        <br />
         <MyTableV2 pcolumns={stockindatacolumn} pdata={stockindata} />
       </MyModal>
     </div>
