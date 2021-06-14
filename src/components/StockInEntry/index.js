@@ -203,7 +203,7 @@ export default function StockInEntry() {
     });
     if (response["data"][0].res === 1) {
       setLoading(false);
-      alert("saved");
+      //alert("saved");
       console.debug(response);
       retrieveStockInData(tranId);
     } else {

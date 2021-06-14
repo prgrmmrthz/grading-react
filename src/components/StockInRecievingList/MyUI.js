@@ -34,7 +34,7 @@ const MyUI = ({
     <div>
       <Card>
         <Card.Header>
-          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
             <div>
               <i className="mr-4"></i> Adjusted Stocks
             </div>

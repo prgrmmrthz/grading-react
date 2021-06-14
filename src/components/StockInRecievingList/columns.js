@@ -30,14 +30,14 @@ export const stockinlistcolumn = [
     },
   },
   {
-    Header: "Created On",
+    Header: "Created At",
     accessor: "createdAt",
     Cell: ({ value }) => {
       return format(new Date(value), "MM/dd/yyyy");
     },
   },
   {
-    Header: "Updated On",
+    Header: "Updated At",
     accessor: "updatedAt",
     Cell: ({ value }) => {
       return format(new Date(value), "MM/dd/yyyy");

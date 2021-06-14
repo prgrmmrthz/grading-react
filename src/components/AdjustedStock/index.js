@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
-var jsPDF = require("jspdf");
-require("jspdf-autotable");
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { numberWithCommas } from "../../utils/format";
+import { format } from "date-fns";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function AdjustedStock() {
+  const [auth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isAsc, setIsAsc] = useState(false);
@@ -31,7 +35,16 @@ export default function AdjustedStock() {
     //console.log("response", response);
     if (response["data"]) {
       setLoading(false);
-      setData(response["data"]);
+      const data2 = response["data"].map((v) => {
+        const { id, product, unit, qty, reason, date, adjustedBy } = v;
+        return {
+          id, product, unit, reason, adjustedBy,
+          qty: numberWithCommas(Number(qty)),
+          date
+        };
+      });
+      console.debug('data2',data2);
+      setData(data2);
     }
   };
 
@@ -118,13 +131,9 @@ export default function AdjustedStock() {
       },
       margin: { top: 160 },
       columnStyles: {
-        ordertotal: {
-          halign: "right",
-          fontStyle: "bold",
-        },
-        id: {
+        qty: {
           halign: "center",
-          columnWidth: 40,
+          fontStyle: "bold",
         },
         /*         totalrelease: {
           halign: 'right',
@@ -147,7 +156,7 @@ export default function AdjustedStock() {
         var pageHeight =
           doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
         doc.text(
-          "Printed by: AAA ",
+          "Printed by:"+auth.user,
           dataToPrint.settings.margin.right,
           pageHeight - 40
         );

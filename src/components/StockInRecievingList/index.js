@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
 import {stockindatacolumn, stockinlistcolumn} from './columns';
-//import { AuthContext } from "../../context/AuthContext";
+import { format } from "date-fns";
+import { AuthContext } from "../../context/AuthContext";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { numberWithCommas } from "../../utils/format";
 
 export default function StockInRecievingList() {
-  //const [auth] = useContext(AuthContext);
+  const [auth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const header = ['reference_number','supplier','qty','updated_At','created_At','remarks','user','status'];
@@ -36,7 +37,7 @@ export default function StockInRecievingList() {
         "left join suppliers s on s.id=si.supplier left join user a on a.id=si.user",
       wc:
         from && to
-          ? `si.createdAt >= '${cd(from)}' and si.createdAt <= '${cd(to)}' and si.status=1${term ? a: ""}`
+          ? `si.createdAt >= '${cd(from)}' and si.createdAt <= '${cd(to)}' and si.status>0${term ? a: ""}`
           : "DATE(si.createdAt) = CURDATE() and si.status=1",
       limit: "",
     };
@@ -98,7 +99,111 @@ export default function StockInRecievingList() {
   const onSubmit = async ({ adjustqty, id, reason }, e) => {};
 
   const onPrint = () => {
+    const dataPrint = data.map((v) => {
+      const { reference_number, supplier, qty, createdAt, updatedAt, remarks, user, status } = v;
+      return {
+        reference_number, supplier,
+        qty: numberWithCommas(Number(qty)),
+        createdAt: format(new Date(createdAt), "MM/dd/yyyy"),
+        updatedAt: format(new Date(updatedAt), "MM/dd/yyyy"),
+        remarks, user,
+        status: status === 1 ? 'Completed' : "Cancelled"
+      };
+    });
+    var columns = [
+      {
+        title: "Ref#",
+        dataKey: "reference_number",
+      },
+      {
+        title: "Supplier",
+        dataKey: "supplier",
+      },
+      {
+        title: "QTY",
+        dataKey: "qty",
+      },
+      {
+        title: "Created At",
+        dataKey: "createdAt",
+      },
+      {
+        title: "Updated At",
+        dataKey: "updatedAt",
+      },
+      {
+        title: "Remarks",
+        dataKey: "remarks",
+      },
+      {
+        title: "User",
+        dataKey: "user",
+      },
+      {
+        title: "Status",
+        dataKey: "status",
+      },
+    ];
+    var doc = new jsPDF("p", "pt", "letter");
+    var totalPagesExp = "{total_pages_count_string}";
+    const {from,to} = filterDate;
+    doc.autoTable(columns, dataPrint, {
+      theme: "grid",
+      startY: false, // false (indicates margin top value) or a number
+      tableWidth: "auto", // 'auto', 'wrap' or a number
+      showHead: "everyPage", // 'everyPage', 'firstPage', 'never'
+      tableLineColor: 200, // number, array (see color section below)
+      tableLineWidth: 0,
+      styles: {
+        fontSize: 8,
+      },
+      headStyles: {
+        fontStyle: "bold",
+        halign: "center",
+      },
+      margin: { top: 160 },
+      columnStyles: {
+        qty: {
+          halign: "center",
+          fontStyle: "bold",
+        },
+        /*         totalrelease: {
+          halign: 'right',
+          columnWidth: 60
+        } */
+      },
+      createdCell: function(cell, opts){
 
+      },
+      didDrawPage: function (dataToPrint) {
+        //console.debug(dataPrint);
+        doc.setFontSize(14);
+        doc.text(`STOCK IN LIST`, 40, 80);
+        doc.setFontSize(10);
+        doc.text(`Date: ${format(new Date(from), "MM/dd/yyyy")} - ${format(new Date(to), "MM/dd/yyyy")}`, 40, 113);
+        // FOOTER
+        var str = "Page " + dataToPrint.pageCount;
+        // Total page number plugin only available in jspdf v1.0+
+        if (typeof doc.putTotalPages === "function") {
+          str = str + " of " + totalPagesExp;
+        }
+        doc.setFontSize(10);
+        var pageHeight =
+          doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
+        doc.text(
+          "Printed By: "+auth.user,
+          dataToPrint.settings.margin.right,
+          pageHeight - 40
+        );
+        doc.setFontSize(8);
+        doc.text(str, dataToPrint.settings.margin.right, pageHeight - 10);
+      },
+    });
+    if (typeof doc.putTotalPages === "function") {
+      doc.putTotalPages(totalPagesExp);
+    }
+    var blob = doc.output("blob");
+    window.open(URL.createObjectURL(blob));
   };
 
   const onPrintStockInDetails = () => {
