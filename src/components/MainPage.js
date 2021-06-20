@@ -17,6 +17,7 @@ import Protected from "./Protected";
 import NotFound from "./NotFound";
 import StockInEntry from "./StockInEntry";
 import StockInRecievingList from "./StockInRecievingList";
+import AttendanceCalendar from "./AttendanceCalendar";
 
 function MainPage() {
   const [auth] = useContext(AuthContext);
@@ -34,23 +35,8 @@ function MainPage() {
               <Route exact path="/dashboard">
                 <Protected cmp={Dashboard} />
               </Route>
-              <Route exact path="/purchase-orders">
-                <Protected cmp={PurchaseOrders} />
-              </Route>
-              <Route exact path="/stock-adjustment">
-                <Protected cmp={StockAdjustment} />
-              </Route>
-              <Route exact path="/adjusted-stock">
-                <Protected cmp={AdjustedStock} />
-              </Route>
-              <Route exact path="/stock-in-entry">
-                <Protected cmp={StockInEntry} />
-              </Route>
-              <Route exact path="/suppliers">
-                <Protected cmp={Suppliers} />
-              </Route>
-              <Route exact path="/stock-in-list">
-                <Protected cmp={StockInRecievingList} />
+              <Route exact path="/attendance-calendar">
+                <Protected cmp={AttendanceCalendar} />
               </Route>
               <Route path="*" component={NotFound} />
             </Switch>

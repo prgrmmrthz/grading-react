@@ -7,13 +7,9 @@ export default function SideNav() {
 
   const [linksData] = useState([
     {
-      group: "Inventory",
+      group: "Set Up",
       links2: [
-        { text: "Suppliers", link: "/suppliers" },
-        { text: "Stock Adjustment", link: "/stock-adjustment" },
-        { text: "Adjusted Stock List", link: "/adjusted-stock" },
-        { text: "Stock-In-Entry", link: "/stock-in-entry" },
-        { text: "Stock-In-List", link: "/stock-in-list" },
+        { text: "Attendance Calendar", link: "/attendance-calendar" }
       ],
     },
   ]);

@@ -1,25 +1,38 @@
 import React, { useState, useEffect, useContext } from "react";
+import { format } from "date-fns";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
+import { AuthContext } from "../../context/AuthContext";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
-import {stockindatacolumn, stockinlistcolumn} from './columns';
-import { format } from "date-fns";
-import { AuthContext } from "../../context/AuthContext";
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { stockindatacolumn, stockinlistcolumn } from "./columns";
 import { numberWithCommas } from "../../utils/format";
 
 export default function StockInRecievingList() {
   const [auth] = useContext(AuthContext);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const header = ['reference_number','supplier','qty','updated_At','created_At','remarks','user','status'];
+  const header = [
+    "reference_number",
+    "supplier",
+    "qty",
+    "updated_At",
+    "created_At",
+    "remarks",
+    "user",
+    "status",
+  ];
   const headerStockIn = ["product", "qty"];
   const [data, setData] = useState([]);
   const [stockindata, setstockindata] = useState([]);
   const [selectedStockInDetails, setselectedStockInDetails] = useState(null);
   const [formValues] = useState({});
   const [mode] = useState(1);
-  const [filterDate, setFilterDate] = useState({from: new Date(), to: new Date()});
+  const [filterDate, setFilterDate] = useState({
+    from: new Date(),
+    to: new Date(),
+  });
 
   useEffect(() => {
     retrieveData();
@@ -27,7 +40,7 @@ export default function StockInRecievingList() {
   }, []);
 
   const retrieveData = async (from, to, term) => {
-    const a = ` and (si.reference_number like '%${term}%' or s.name like '%${term}%' or remarks like '%${term}%')`
+    const a = ` and (si.reference_number like '%${term}%' or s.name like '%${term}%' or remarks like '%${term}%')`;
     const request = {
       cols:
         "si.id,si.reference_number,s.name as supplier,si.qty, si.createdAt,si.updatedAt,a.name as user,si.status,si.remarks,si.status",
@@ -37,7 +50,9 @@ export default function StockInRecievingList() {
         "left join suppliers s on s.id=si.supplier left join user a on a.id=si.user",
       wc:
         from && to
-          ? `si.createdAt >= '${cd(from)}' and si.createdAt <= '${cd(to)}' and si.status>0${term ? a: ""}`
+          ? `si.createdAt >= '${cd(from)}' and si.createdAt <= '${cd(
+              to
+            )}' and si.status>0${term ? a : ""}`
           : "DATE(si.createdAt) = CURDATE() and si.status=1",
       limit: "",
     };
@@ -75,16 +90,30 @@ export default function StockInRecievingList() {
     }
   };
 
-  const handleOnEdit = ({id,reference_number,qty,createdAt,user,supplier}) => {
+  const handleOnEdit = ({
+    id,
+    reference_number,
+    qty,
+    createdAt,
+    user,
+    supplier,
+  }) => {
     retrieveStockInData(id);
-    setselectedStockInDetails({reference_number,qty,createdAt,user,supplier});
+    setselectedStockInDetails({
+      id,
+      reference_number,
+      qty,
+      createdAt,
+      user,
+      supplier,
+    });
     setOpenModal(true);
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const {from,to} = filterDate;
-    retrieveData(from,to,e.target[0].value);
+    const { from, to } = filterDate;
+    retrieveData(from, to, e.target[0].value);
   };
 
   const handleSelection = ({ startDate: f, endDate: t }) => {
@@ -92,22 +121,31 @@ export default function StockInRecievingList() {
     //console.debug(f);
   };
 
-  const handleSort = (d) => {
-
-  };
+  const handleSort = (d) => {};
 
   const onSubmit = async ({ adjustqty, id, reason }, e) => {};
 
   const onPrint = () => {
     const dataPrint = data.map((v) => {
-      const { reference_number, supplier, qty, createdAt, updatedAt, remarks, user, status } = v;
+      const {
+        reference_number,
+        supplier,
+        qty,
+        createdAt,
+        updatedAt,
+        remarks,
+        user,
+        status,
+      } = v;
       return {
-        reference_number, supplier,
+        reference_number,
+        supplier,
         qty: numberWithCommas(Number(qty)),
         createdAt: format(new Date(createdAt), "MM/dd/yyyy"),
         updatedAt: format(new Date(updatedAt), "MM/dd/yyyy"),
-        remarks, user,
-        status: status === 1 ? 'Completed' : "Cancelled"
+        remarks,
+        user,
+        status: status === 1 ? "Completed" : "Cancelled",
       };
     });
     var columns = [
@@ -146,7 +184,7 @@ export default function StockInRecievingList() {
     ];
     var doc = new jsPDF("p", "pt", "letter");
     var totalPagesExp = "{total_pages_count_string}";
-    const {from,to} = filterDate;
+    const { from, to } = filterDate;
     doc.autoTable(columns, dataPrint, {
       theme: "grid",
       startY: false, // false (indicates margin top value) or a number
@@ -172,15 +210,20 @@ export default function StockInRecievingList() {
           columnWidth: 60
         } */
       },
-      createdCell: function(cell, opts){
-
-      },
+      createdCell: function (cell, opts) {},
       didDrawPage: function (dataToPrint) {
         //console.debug(dataPrint);
         doc.setFontSize(14);
         doc.text(`STOCK IN LIST`, 40, 80);
         doc.setFontSize(10);
-        doc.text(`Date: ${format(new Date(from), "MM/dd/yyyy")} - ${format(new Date(to), "MM/dd/yyyy")}`, 40, 113);
+        doc.text(
+          `Date: ${format(new Date(from), "MM/dd/yyyy")} - ${format(
+            new Date(to),
+            "MM/dd/yyyy"
+          )}`,
+          40,
+          113
+        );
         // FOOTER
         var str = "Page " + dataToPrint.pageCount;
         // Total page number plugin only available in jspdf v1.0+
@@ -191,7 +234,7 @@ export default function StockInRecievingList() {
         var pageHeight =
           doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
         doc.text(
-          "Printed By: "+auth.user,
+          "Printed By: " + auth.user,
           dataToPrint.settings.margin.right,
           pageHeight - 40
         );
@@ -207,17 +250,17 @@ export default function StockInRecievingList() {
   };
 
   const onPrintStockInDetails = () => {
-    const {qty,createdAt,user,supplier} = selectedStockInDetails;
+    const { qty, createdAt, user, supplier } = selectedStockInDetails;
     const dataPrint = stockindata.map((v) => {
       const { product, qty } = v;
       return {
         product,
-        qty: numberWithCommas(Number(qty))
+        qty: numberWithCommas(Number(qty)),
       };
     });
     var columns = [
       { title: "Product", dataKey: "product" },
-      { title: "Qty", dataKey: "qty" }
+      { title: "Qty", dataKey: "qty" },
     ];
     var doc = new jsPDF("p", "pt", "letter");
     var totalPagesExp = "{total_pages_count_string}";
@@ -246,9 +289,7 @@ export default function StockInRecievingList() {
           columnWidth: 60
         } */
       },
-      createdCell: function(cell, opts){
-
-      },
+      createdCell: function (cell, opts) {},
       didDrawPage: function (dataToPrint) {
         //console.debug(dataPrint);
         doc.setFontSize(14);
@@ -269,7 +310,7 @@ export default function StockInRecievingList() {
         var pageHeight =
           doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
         doc.text(
-          "User: "+user,
+          "User: " + user,
           dataToPrint.settings.margin.right,
           pageHeight - 40
         );
@@ -282,6 +323,32 @@ export default function StockInRecievingList() {
     }
     var blob = doc.output("blob");
     window.open(URL.createObjectURL(blob));
+  };
+
+  const onCancellTransaction = async () => {
+    const cancelReason = prompt("Enter reason for cancelation");
+    if (cancelReason) {
+
+      setLoading(true);
+      //stockinid int, p_user int, premarks text
+      let p = `cancelStockin(${selectedStockInDetails.id},${auth.id},'${cancelReason}')`;
+      const response = await api.post("/callSP", { fn: p }).catch((err) => {
+        setLoading(false);
+        alert("cannot save!");
+      });
+      if (response["data"][0].res === 1) {
+        setLoading(false);
+        alert("saved");
+        console.debug(response);
+        setOpenModal(false);
+        retrieveData();
+      } else {
+        setLoading(false);
+        alert("cannot save!");
+      }
+    } else {
+      alert("input reason");
+    }
   };
 
   return (
@@ -307,6 +374,7 @@ export default function StockInRecievingList() {
       stockinlistcolumn={stockinlistcolumn}
       onPrintStockInDetails={onPrintStockInDetails}
       selectedStockInDetails={selectedStockInDetails}
+      onCancellTransaction={onCancellTransaction}
     />
   );
 }

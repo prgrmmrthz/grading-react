@@ -28,7 +28,8 @@ const MyUI = ({
   stockindatacolumn,
   stockinlistcolumn,
   onPrintStockInDetails,
-  selectedStockInDetails
+  selectedStockInDetails,
+  onCancellTransaction
 }) => {
   return (
     <div>
@@ -121,7 +122,7 @@ const MyUI = ({
             Print
           </Button>
           &nbsp;
-          <Button variant="primary">Cancel this Transaction</Button>
+          <Button variant="primary" onClick={() => onCancellTransaction()}>Cancel this Transaction</Button>
         </div>
         <br />
         <MyTableV2 pcolumns={stockindatacolumn} pdata={stockindata} />

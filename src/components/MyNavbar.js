@@ -19,7 +19,7 @@ const MyNavbar = () => {
 
   return (
     <Navbar bg="dark" variant="dark">
-      <Navbar.Brand>INTL INVENT</Navbar.Brand>
+      <Navbar.Brand>INTL GRADING</Navbar.Brand>
       <Nav className="mr-auto">
         <Nav.Link>
           <button
