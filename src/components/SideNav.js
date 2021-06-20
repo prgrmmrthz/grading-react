@@ -9,7 +9,9 @@ export default function SideNav() {
     {
       group: "Set Up",
       links2: [
-        { text: "Attendance Calendar", link: "/attendance-calendar" }
+        { text: "Attendance Calendar", link: "/attendance-calendar" },
+        { text: "Grade & Section", link: "/grade-section" },
+        { text: "Student Master List", link: "/student-entry" },
       ],
     },
   ]);

@@ -23,7 +23,7 @@ export const MyTableV2 = ({ pcolumns, pdata, handleOnDblClick }) => {
   } = tableInstance;
 
   return (
-    <div className="tableFixHead  ">
+    <div className="tableFixHead d-flex">
       <Table
         striped
         bordered

@@ -4,7 +4,6 @@ import MyUI from "./MyUI";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { numberWithCommas } from "../../utils/format";
-import { format } from "date-fns";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function AdjustedStock() {

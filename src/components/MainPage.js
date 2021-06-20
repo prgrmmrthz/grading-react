@@ -6,18 +6,14 @@ import {
 
 import SideNav from "./SideNav";
 import MyFooter from "./Footer";
-import PurchaseOrders from "./PurchaseOrders";
 import Dashboard from "./Dashboard";
-import Suppliers from "./Suppliers";
-import StockAdjustment from "./StockAdjustment";
-import AdjustedStock from "./AdjustedStock";
 import Login from "./Login";
 import { AuthContext } from "../context/AuthContext";
 import Protected from "./Protected";
 import NotFound from "./NotFound";
-import StockInEntry from "./StockInEntry";
-import StockInRecievingList from "./StockInRecievingList";
 import AttendanceCalendar from "./AttendanceCalendar";
+import GradeSection from "./GradeSection";
+import StudentEntry from "./StudentEntry";
 
 function MainPage() {
   const [auth] = useContext(AuthContext);
@@ -37,6 +33,12 @@ function MainPage() {
               </Route>
               <Route exact path="/attendance-calendar">
                 <Protected cmp={AttendanceCalendar} />
+              </Route>
+              <Route exact path="/grade-section">
+                <Protected cmp={GradeSection} />
+              </Route>
+              <Route exact path="/student-entry">
+                <Protected cmp={StudentEntry} />
               </Route>
               <Route path="*" component={NotFound} />
             </Switch>
