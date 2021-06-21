@@ -46,7 +46,7 @@ export default function StudentEntry() {
     setLoading(true);
     let p = "";
     if (mode === 2) {
-      //p = `updateGradeSection('${grade}',${id},'${section}')`;
+      p = `updateStudent('${name}',${age},'${sex}','${lrn}','${bdF}',${id})`;
     } else {
       //pname text, page int, psex text, plrn text, pbirthday text
       p = `insertStudent('${name}',${age},'${sex}','${lrn}','${bdF}')`;
@@ -85,11 +85,11 @@ export default function StudentEntry() {
     retrieveData(e.target[0].value);
   };
 
-  const handleOnDelete = async ({ id, grade, section }) => {
-    if (window.confirm(`Delete ${grade}-${section}?`)) {
+  const handleOnDelete = async ({ id, name, lrn }) => {
+    if (window.confirm(`Delete ${lrn}-${name}?`)) {
       setLoading(true);
       const response = await api
-        .delete(`/Delete?id=${id}&table=grade_section&wc=id`)
+        .delete(`/Delete?id=${id}&table=student&wc=id`)
         .catch((err) => {
           setLoading(false);
           console.debug("err", err);
