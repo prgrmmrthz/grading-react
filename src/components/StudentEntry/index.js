@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
+import { format } from "date-fns";
 
 import { gradesectioncolumn } from "./columns";
 
@@ -38,20 +39,22 @@ export default function StudentEntry() {
     setOpenModal(true);
   };
 
-  const onSubmit = async ({ name,age,sex,lrn,birthday }, e) => {
+  const onSubmit = async ({ name,sex,lrn,birthday }, e) => {
     const {id} = formValues;
+    const age = calcuAge(birthday);
+    const bdF = format(birthday, "yyyy-MM-dd");
     setLoading(true);
     let p = "";
     if (mode === 2) {
       //p = `updateGradeSection('${grade}',${id},'${section}')`;
     } else {
       //pname text, page int, psex text, plrn text, pbirthday text
-      p = `insertStudent('${name}',${age},'${sex}','${lrn}','${birthday}')`;
+      p = `insertStudent('${name}',${age},'${sex}','${lrn}','${bdF}')`;
     }
     const a = { fn: p };
     const response = await api.post("/callSP", a).catch((err) => {
       setLoading(false);
-      alert("cannot save name/lrn already exist!");
+      alert("cannot save error occured!");
     });
     if (response["data"][0].res === 1) {
       setLoading(false);
@@ -64,6 +67,12 @@ export default function StudentEntry() {
       alert("cannot save name/lrn already exist!");
     }
   };
+
+  const calcuAge = (bd) => {
+    const ageDifMs = Date.now() - bd.getTime();
+    const ageDate = new Date(ageDifMs);
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  }
 
   const handleOnEdit = (d) => {
     setFormValues(d);
