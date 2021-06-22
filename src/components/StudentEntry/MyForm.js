@@ -29,7 +29,6 @@ export default function MyForm({preloadedValues, onSubmit, loading}) {
 
   const submitForm = (data) =>{
     onSubmit(data);
-    reset();
   }
 
   useEffect(() => {

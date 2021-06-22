@@ -64,7 +64,10 @@ export default function StudentEntry() {
       retrieveData();
     } else if (response["data"][0].res === 3) {
       setLoading(false);
-      alert("cannot save name/lrn already exist!");
+      alert("cannot save name:"+name+" already exist!");
+    } else if (response["data"][0].res === 2) {
+      setLoading(false);
+      alert("cannot save LRN:"+lrn+" already exist!");
     }
   };
 
