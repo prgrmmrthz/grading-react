@@ -14,6 +14,7 @@ import NotFound from "./NotFound";
 import AttendanceCalendar from "./AttendanceCalendar";
 import GradeSection from "./GradeSection";
 import StudentEntry from "./StudentEntry";
+import SubjectEntry from "./SubjectEntry";
 
 function MainPage() {
   const [auth] = useContext(AuthContext);
@@ -39,6 +40,9 @@ function MainPage() {
               </Route>
               <Route exact path="/student-entry">
                 <Protected cmp={StudentEntry} />
+              </Route>
+              <Route exact path="/subject-entry">
+                <Protected cmp={SubjectEntry} />
               </Route>
               <Route path="*" component={NotFound} />
             </Switch>

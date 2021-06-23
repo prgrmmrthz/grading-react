@@ -12,6 +12,7 @@ export default function SideNav() {
         { text: "Attendance Calendar", link: "/attendance-calendar" },
         { text: "Grade & Section", link: "/grade-section" },
         { text: "Student Master List", link: "/student-entry" },
+        { text: "Subject Master List", link: "/subject-entry" },
       ],
     },
   ]);
