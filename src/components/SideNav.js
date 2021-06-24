@@ -14,6 +14,7 @@ export default function SideNav() {
         { text: "Student Master List", link: "/student-entry" },
         { text: "Subject Master List", link: "/subject-entry" },
         { text: "Classroom", link: "/classroom-setup" },
+        { text: "Enroll", link: "/enroll" },
       ],
     },
   ]);

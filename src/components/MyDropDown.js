@@ -36,7 +36,7 @@ const CustomMenu = React.forwardRef(
         <ul className="list-unstyled">
           {React.Children.toArray(children).filter(
             (child) =>
-              !value || child.props.children.toLowerCase().startsWith(value)
+              !value || child.props.children.toLowerCase().includes(value)
           )}
         </ul>
       </div>
@@ -54,7 +54,7 @@ const MyDropDown = ({options,handleOnSelect, btnTitle}) => {
 
         <Dropdown.Menu as={CustomMenu}>
           {options.map((o) => (
-            <Dropdown.Item onClick={(event)=>handleOnSelect(o)} eventKey={o.id}>{o.name}</Dropdown.Item>
+            <Dropdown.Item onClick={(event)=>handleOnSelect(o)} eventKey={o.id}>{o.name.toString().toUpperCase()}</Dropdown.Item>
           ))}
         </Dropdown.Menu>
       </Dropdown>
