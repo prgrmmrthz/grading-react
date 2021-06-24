@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { Navbar, Nav, Form, Dropdown, NavItem, NavLink } from "react-bootstrap";
+import { Navbar, Nav, Form, Dropdown, NavItem, NavLink, Button } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
@@ -18,14 +18,13 @@ const MyNavbar = () => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar className="sb-topnav" bg="dark" variant="dark" expand>
       <Navbar.Brand>INTL GRADING</Navbar.Brand>
       <Nav className="mr-auto">
         <Nav.Link>
           <button
             className="btn btn-link btn-sm order-1 order-lg-0"
-            id="sidebarToggle"
-            href="#"
+            onClick={()=>{document.body.classList.toggle("sb-sidenav-toggled")}}
           >
             <FontAwesomeIcon icon={faBars} />
           </button>
@@ -33,6 +32,9 @@ const MyNavbar = () => {
       </Nav>
       <Form inline>
         <div className="mr-sm-2" />
+        <Nav.Link href="https://m.me/vicgr8" target="_blank">
+          For questions please contact me on Messenger
+        </Nav.Link>
         {auth.isAuthenticated && (
           <Dropdown as={NavItem}>
             <Dropdown.Toggle as={NavLink}>Account Settings</Dropdown.Toggle>

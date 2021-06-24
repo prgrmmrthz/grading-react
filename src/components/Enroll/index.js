@@ -76,11 +76,11 @@ export default function Enroll() {
     retrieveClassroom(selectedSection.id, e.target[0].value);
   };
 
-  const handleOnDelete = async ({ id, subject }) => {
-    if (window.confirm(`Delete ${subject}?`)) {
+  const handleOnDelete = async ({ id, name }) => {
+    if (window.confirm(`Delete ${name}?`)) {
       setLoading(true);
       const response = await api
-        .delete(`/Delete?id=${id}&table=classroom&wc=id`)
+        .delete(`/Delete?id=${id}&table=enrolldet&wc=id`)
         .catch((err) => {
           setLoading(false);
           console.debug("err", err);

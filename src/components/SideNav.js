@@ -17,6 +17,13 @@ export default function SideNav() {
         { text: "Enroll", link: "/enroll" },
       ],
     },
+    {
+      group: "Transactions",
+      links2: [
+        { text: "Grading Sheet", link: "/grading-sheet" },
+        { text: "Grading Sheet (Others)", link: "/others-grading-sheet" },
+      ],
+    },
   ]);
   return (
     <div id="layoutSidenav_nav">
@@ -26,13 +33,6 @@ export default function SideNav() {
       >
         <div className="sb-sidenav-menu">
           <div className="nav">
-            <div className="sb-sidenav-menu-heading">Core</div>
-            <Link className="nav-link" to="/dashboard">
-              <div className="sb-nav-link-icon">
-                <i className="fas fa-tachometer-alt"></i>
-              </div>
-              Dashboard
-            </Link>
             {linksData.map((v) => (
               <div>
                 <div className="sb-sidenav-menu-heading">{v.group}</div>
