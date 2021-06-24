@@ -1,8 +1,9 @@
 import React, {useState } from "react";
-import { Dropdown, FormControl } from "react-bootstrap";
+import { Button, Dropdown, FormControl } from "react-bootstrap";
 
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-  <button
+
+  <Button variant="link"
     ref={ref}
     onClick={(e) => {
       e.preventDefault();
@@ -11,7 +12,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
   >
     {children}
     &#x25bc;
-  </button>
+  </Button>
 ));
 
 const CustomMenu = React.forwardRef(
@@ -43,17 +44,17 @@ const CustomMenu = React.forwardRef(
   }
 );
 
-const MyDropDown = ({options,handleOnSelect}) => {
+const MyDropDown = ({options,handleOnSelect, btnTitle}) => {
   return (
     <div>
       <Dropdown>
         <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-          Change
+          {btnTitle}
         </Dropdown.Toggle>
 
         <Dropdown.Menu as={CustomMenu}>
           {options.map((o) => (
-            <Dropdown.Item onClick={(event)=>handleOnSelect(o.id,o.name)} eventKey={o.id}>{o.name}</Dropdown.Item>
+            <Dropdown.Item onClick={(event)=>handleOnSelect(o)} eventKey={o.id}>{o.name}</Dropdown.Item>
           ))}
         </Dropdown.Menu>
       </Dropdown>

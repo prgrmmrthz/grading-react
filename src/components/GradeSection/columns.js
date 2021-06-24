@@ -9,8 +9,8 @@ export const gradesectioncolumn = [
         #
       </div>
     ),
-    accessor: "id",
-    width: 5,
+    accessor: "index",
+    Cell: ({ row }) => <div>{row.index + 1}</div>,
   },
   {
     Header: () => (

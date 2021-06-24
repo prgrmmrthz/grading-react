@@ -21,7 +21,6 @@ export default function MyForm({preloadedValues, onSubmit, loading}) {
     handleSubmit,
     setValue,
     setFocus,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),

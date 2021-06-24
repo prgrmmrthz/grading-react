@@ -22,6 +22,6 @@ export const gradesectioncolumn = [
         Subject
       </div>
     ),
-    accessor: "name",
+    accessor: "subject",
   }
 ];

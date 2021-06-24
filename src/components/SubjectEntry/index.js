@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
-import { format } from "date-fns";
 
 import { gradesectioncolumn } from "./columns";
 

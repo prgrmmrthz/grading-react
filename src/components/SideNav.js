@@ -13,6 +13,7 @@ export default function SideNav() {
         { text: "Grade & Section", link: "/grade-section" },
         { text: "Student Master List", link: "/student-entry" },
         { text: "Subject Master List", link: "/subject-entry" },
+        { text: "Classroom", link: "/classroom-setup" },
       ],
     },
   ]);

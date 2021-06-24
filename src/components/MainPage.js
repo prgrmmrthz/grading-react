@@ -15,6 +15,7 @@ import AttendanceCalendar from "./AttendanceCalendar";
 import GradeSection from "./GradeSection";
 import StudentEntry from "./StudentEntry";
 import SubjectEntry from "./SubjectEntry";
+import ClassroomSetup from "./ClassroomSetup";
 
 function MainPage() {
   const [auth] = useContext(AuthContext);
@@ -43,6 +44,9 @@ function MainPage() {
               </Route>
               <Route exact path="/subject-entry">
                 <Protected cmp={SubjectEntry} />
+              </Route>
+              <Route exact path="/classroom-setup">
+                <Protected cmp={ClassroomSetup} />
               </Route>
               <Route path="*" component={NotFound} />
             </Switch>
