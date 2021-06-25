@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { Navbar, Nav, Form, Dropdown, NavItem, NavLink, Button } from "react-bootstrap";
+import { Navbar, Nav, Form, Dropdown, NavItem, NavLink } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'

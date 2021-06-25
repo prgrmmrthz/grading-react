@@ -10,7 +10,8 @@ import * as yup from "yup";
 
 export default function MyForm({preloadedValues, onSubmit, loading}) {
   const schema = yup.object().shape({
-    name: yup.string().required()
+    name: yup.string().required(),
+    code: yup.string().required()
   });
 
   const {
@@ -30,15 +31,26 @@ export default function MyForm({preloadedValues, onSubmit, loading}) {
   useEffect(() => {
     //console.debug(preloadedValues);
     if (preloadedValues) {
-      const { name} = preloadedValues;
+      const { name, code} = preloadedValues;
       setValue('name', name);
-      setFocus('name');
+      setValue('code', code);
+      setFocus('code');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preloadedValues]);
 
   return (
     <Form onSubmit={handleSubmit(submitForm)}>
+      <Form.Group>
+        <Form.Label>Subject code</Form.Label>
+        <Form.Control
+          type="text"
+          code="code"
+          placeholder="Enter code"
+          {...register("code")}
+        />
+        <p>{errors.code?.message}</p>
+      </Form.Group>
       <Form.Group>
         <Form.Label>Subject Name</Form.Label>
         <Form.Control

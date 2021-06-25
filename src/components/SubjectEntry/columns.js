@@ -16,7 +16,19 @@ export const gradesectioncolumn = [
     Header: () => (
       <div
         style={{
-          width: 850,
+          width: 250,
+        }}
+      >
+        Subject Code
+      </div>
+    ),
+    accessor: "code",
+  },
+  {
+    Header: () => (
+      <div
+        style={{
+          width: 650,
         }}
       >
         Subject

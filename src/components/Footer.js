@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "react-bootstrap";
 
 export default function MyFooter() {
   return (
@@ -8,9 +9,9 @@ export default function MyFooter() {
           <div className="d-flex align-items-center justify-content-between small">
             <div className="text-muted">
               Copyright &copy;
-              <a href="https://www.facebook.com/vicgr8" target="_blank">
+              <Button variant="link" href="https://www.facebook.com/vicgr8" target="_blank">
                 Vic Wilton Algorithm 2021
-              </a>
+              </Button>
             </div>
             <div>
               <button>Privacy Policy</button>

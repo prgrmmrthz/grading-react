@@ -13,7 +13,7 @@ export default function SubjectEntry() {
 
   const retrieveData = async (term = "") => {
     const request = {
-      cols: "id,name",
+      cols: "id,name,code",
       table: "subjects",
       order: "id asc",
       join: "",
@@ -38,33 +38,36 @@ export default function SubjectEntry() {
     setOpenModal(true);
   };
 
-  const onSubmit = async ({ name }, e) => {
+  const onSubmit = async ({ name, code }) => {
     const {id} = formValues;
     setLoading(true);
     let p = "";
     if (mode === 2) {
-      p = `updateSubject('${name}',${id})`;
+      p = `updateSubject('${name}','${code}',${id})`;
     } else {
       //pname text, page int, psex text, plrn text, pbirthday text
-      p = `insertSubject('${name}')`;
+      p = `insertSubject('${name}','${code}')`;
     }
     const a = { fn: p };
     const response = await api.post("/callSP", a).catch((err) => {
       setLoading(false);
       alert("cannot save error occured!");
     });
-    if (response["data"][0].res === 1) {
-      setLoading(false);
-      alert("saved");
-      setOpenModal(false);
-      //console.debug(response);
-      retrieveData();
-    } else if (response["data"][0].res === 3) {
-      setLoading(false);
-      alert("cannot save "+name+" already exist!");
-    } else if (response["data"][0].res === 2) {
-      setLoading(false);
-      alert("cannot save "+name+" already exist!");
+    if(response){
+      const a = response["data"][0].res;
+      if (a === 1) {
+        setLoading(false);
+        alert("saved");
+        setOpenModal(false);
+        //console.debug(response);
+        retrieveData();
+      } else if (a === 3) {
+        setLoading(false);
+        alert("cannot save "+name+" already exist!");
+      } else if (a === 2) {
+        setLoading(false);
+        alert("cannot save "+code+" already exist!");
+      }
     }
   };
 

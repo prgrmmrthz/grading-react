@@ -50,9 +50,9 @@ export default function ClassroomSetup() {
 
   const retrieveClassroom = async (secid, term="") => {
     const request = {
-      cols: "c.id,c.subject as subjectid,s.name as subject",
+      cols: "c.id,c.subject as subjectid,s.name as subject, s.code",
       table: "classroom c",
-      order: "id",
+      order: "id desc",
       join: "left join subjects s on s.id=c.subject",
       wc: `c.section=${secid}${term && " and s.name like '%"+term+"%'"}`,
       limit: "",

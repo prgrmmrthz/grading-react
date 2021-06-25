@@ -31,7 +31,7 @@ export const gradesectioncolumn = [
           width: 550,
         }}
       >
-        Subject
+        Name
       </div>
     ),
     accessor: "name",
