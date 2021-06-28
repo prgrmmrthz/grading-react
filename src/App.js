@@ -6,16 +6,19 @@ import { BrowserRouter as Router } from "react-router-dom";
 import MyNavbar from "./components/MyNavbar";
 import MainPage from "./components/MainPage";
 import { AuthProvider } from "./context/AuthContext";
+import { GradingSheetProvider } from "./context/GradingSheetContext";
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="App">
-          <MyNavbar />
-          <MainPage />
-        </div>
-      </Router>
+      <GradingSheetProvider>
+        <Router>
+          <div className="App">
+            <MyNavbar />
+            <MainPage />
+          </div>
+        </Router>
+      </GradingSheetProvider>
     </AuthProvider>
   );
 }

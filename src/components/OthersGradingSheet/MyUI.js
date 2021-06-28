@@ -1,4 +1,6 @@
+import { useContext, useEffect, useState } from "react";
 import { Card, Row, Container, Col, Spinner } from "react-bootstrap";
+import { GradingSheetContext } from "../../context/GradingSheetContext";
 import MyDropDown from "../MyDropDown";
 import { MyTableV3 } from "../MyTableV3";
 
@@ -8,8 +10,47 @@ const MyUI = ({
   handleOnSelectSection,
   loading,
   columns,
-  data
 }) => {
+  const [data, setData] = useState([]);
+  const { gradingData } = useContext(GradingSheetContext);
+  const [nCol, setCol] = useState(columns);
+  const [nLoadingColumns, setLoadingColumns] = useState(false);
+  const [skipPageReset, setSkipPageReset] = useState(false);
+
+  useEffect(() => {
+    setSkipPageReset(false);
+    setData(gradingData);
+    setLoadingColumns(true);
+    if (gradingData.length > 0) {
+      const col = Object.keys(gradingData[0]).map((v) => {
+        return { Header: v, accessor: v, sticky: v === "name" ? "left" : "" };
+      });
+      setCol(col);
+      setLoadingColumns(false);
+    } else {
+      setCol(columns);
+      setLoadingColumns(false);
+    }
+    //map(v => { return {Header: v, accessor: v}})
+    //const objKeys = await gradingData;
+    //console.debug(await Object.keys(objKeys[0]));
+  }, [gradingData]);
+
+  const updateMyData = (rowIndex, columnId, value) => {
+    setSkipPageReset(true);
+    setData((old) =>
+      old.map((row, index) => {
+        if (index === rowIndex) {
+          return {
+            ...old[rowIndex],
+            [columnId]: value,
+          };
+        }
+        return row;
+      })
+    );
+  };
+
   return (
     <div>
       <Card>
@@ -52,34 +93,15 @@ const MyUI = ({
                     List of Students enrolled in{" "}
                     {selectedSection ? selectedSection.name : ""}
                   </span>
-                  <MyTableV3 columns={[
-                    ...columns,
-                    {
-                      Header: () => (
-                        <div
-                          style={{
-                            width: 5,
-                          }}
-                        ></div>
-                      ),
-                      id: "delete",
-                      accessor: (str) => "delete",
-                      Cell: ({ row }) => (
-                        <button
-                          onClick={() => {
-                            //console.debug('to del', row.original.id);
-                            //data.splice(row.index, 1)
-                            console.debug(row.original);
-                          }}
-                        >
-                          save
-                        </button>
-                      ),
-                    },
-                    ]} data={data}/>
-                  {/* <MyTableV2
-                    pcolumns={[
-                      ...gradesectioncolumn,
+                  {nLoadingColumns && (
+                    <Spinner animation="border" role="status">
+                      <span className="sr-only">Loading...</span>
+                    </Spinner>
+                  )}
+                  <MyTableV3
+                    data={data}
+                    columns={[
+                      ...nCol,
                       {
                         Header: () => (
                           <div
@@ -95,17 +117,17 @@ const MyUI = ({
                             onClick={() => {
                               //console.debug('to del', row.original.id);
                               //data.splice(row.index, 1)
-                              handleOnDelete(row.original);
+                              console.debug(row.original);
                             }}
                           >
-                            x
+                            save
                           </button>
                         ),
                       },
                     ]}
-                    pdata={classroomdata}
-                    handleOnDblClick={handleOnEdit}
-                  /> */}
+                    updateMyData={updateMyData}
+                    skipPageReset={skipPageReset}
+                  />
                 </Col>
               </Row>
             </Container>

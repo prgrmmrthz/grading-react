@@ -1,20 +1,62 @@
+import { useEffect, useState } from 'react';
 import { useTable, useBlockLayout } from "react-table";
 import { useSticky } from "react-table-sticky";
 import { Styles } from "./TableStyles";
 
-export const MyTableV3 = ({ columns, data }) => {
+const EditableCell = ({
+  value: initialValue,
+  row: {index},
+  column: {id},
+  updateMyData
+}) => {
+  const [value, setValue] = useState(initialValue);
+
+  const onChange = e => {
+    setValue(e.target.value);
+  }
+
+  const onBlur = () => {
+    updateMyData(index, id, value)
+  }
+
+  useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue])
+
+  return <input value={value} onChange={onChange} onBlur={onBlur} />
+}
+
+const defaultColumn = {
+  Cell: EditableCell
+}
+
+export const MyTableV3 = ({ columns, data, updateMyData, skipPageReset }) => {
   // Use the state and functions returned from useTable to build your UI
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
     rows,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
       data,
+      defaultColumn,
+      autoResetPage: !skipPageReset,
       initialState: { pageIndex: 2 },
+      updateMyData
     },
     useBlockLayout,
     useSticky
@@ -22,11 +64,11 @@ export const MyTableV3 = ({ columns, data }) => {
 
   return (
     <Styles>
-      <div className="tableWrap">
+      <div className="">
         <div
           {...getTableProps()}
           className="table sticky"
-          style={{ height: 500 }}
+          style={{height: 500 }}
         >
           <div className="header">
             {headerGroups.map((headerGroup) => (
