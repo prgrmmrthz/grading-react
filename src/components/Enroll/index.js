@@ -3,6 +3,7 @@ import api from "../../api/supplier";
 import MyUI from "./MyUI";
 
 import { gradesectioncolumn } from "./columns";
+const SEARCH_URI = 'https://api.github.com/search/users';
 
 export default function Enroll() {
   const [loading, setLoading] = useState(false);
@@ -27,6 +28,24 @@ export default function Enroll() {
       setData(response["data"]);
     }
   };
+
+  const handleSearchAsync = async (query) => {
+    setLoading(true);
+    const request = {
+      cols: "id,name,lrn",
+      table: "student",
+      order: "id asc",
+      join: "",
+      wc: `name like '%${query}%' or lrn=${query}`,
+      limit: "0, 10",
+    };
+    const {data: studentData} = await api.post("/getDataWithJoinClause", request);
+    //console.log("response", response);
+    if (studentData) {
+      setData(studentData);
+      setLoading(false);
+    }
+  }
 
   const retrieveSections = async (term = "") => {
     const request = {
@@ -130,6 +149,7 @@ export default function Enroll() {
       handleOnSelectSection={handleOnSelectSection}
       classroomdata={classroomdata}
       handleOnAddSubject={handleOnAddSubject}
+      handleSearchAsync={handleSearchAsync}
     />
   );
 }

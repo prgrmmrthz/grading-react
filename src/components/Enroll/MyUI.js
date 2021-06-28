@@ -3,6 +3,7 @@ import { Card, Container, Row, Col, Spinner } from "react-bootstrap";
 import SearchBar from "../SearchBar";
 import { MyTableV2 } from "../MyTableV2";
 import MyDropDown from "../MyDropDown";
+import MyDropDownV2 from "../MyDropDownV2";
 
 const MyUI = ({
   handleSearch,
@@ -15,7 +16,8 @@ const MyUI = ({
   selectedSection,
   handleOnSelectSection,
   classroomdata,
-  handleOnAddSubject
+  handleOnAddSubject,
+  handleSearchAsync
 }) => {
   return (
     <div>
@@ -40,16 +42,16 @@ const MyUI = ({
                         />
                       </div>
                     </Col>
-                    <Col>
+
+                    <Col md={12}>
+                      <br />
                       <div>
-                        <span>
-                          Select Student to enroll in this section
-                        </span>
-                        <MyDropDown
+                        {/* <MyDropDown
                           options={data}
                           handleOnSelect={handleOnAddSubject}
                           btnTitle="Add"
-                        />
+                        /> */}
+                        <MyDropDownV2 options={data} handleSearch={handleSearchAsync} loading={loading} />
                       </div>
                     </Col>
                   </Row>
