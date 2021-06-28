@@ -70,7 +70,7 @@ export default function Enroll() {
 
   const retrieveClassroom = async (secid, term = "") => {
     const request = {
-      cols: "e.id,s.lrn,s.name",
+      cols: "e.id,s.lrn,s.name,e.student",
       table: "enrolldet e",
       order: "e.updatedAt desc",
       join: "left join student s on s.id=e.student",
@@ -103,18 +103,24 @@ export default function Enroll() {
     retrieveClassroom(selectedSection.id, e.target[0].value);
   };
 
-  const handleOnDelete = async ({ id, name }) => {
+  const handleOnDelete = async ({ student, name }) => {
     if (window.confirm(`Delete ${name}?`)) {
       setLoading(true);
-      const response = await api
-        .delete(`/Delete?id=${id}&table=enrolldet&wc=id`)
-        .catch((err) => {
+      const a = { fn: `unenroll(${student},${selectedSection.id})` };
+      const {data: unenrollRes} = await api.post("/callSP", a).catch((err) => {
+        setLoading(false);
+        alert("cannot save error occured!");
+      });
+      if (unenrollRes) {
+        if(unenrollRes[0].res > 0){
           setLoading(false);
-          console.debug("err", err);
-          alert("error occured!");
-        });
-      if (response) {
-        retrieveClassroom(selectedSection.id);
+          alert("saved");
+          //console.debug(response);
+          retrieveClassroom(selectedSection.id);
+        }
+      }else{
+        setLoading(false);
+        alert("cannot unenroll!");
       }
     }
   };

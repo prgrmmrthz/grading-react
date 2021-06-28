@@ -69,6 +69,17 @@ const MyUI = ({
           </Card.Title>
           <Card.Text>
             <Container fluid>
+              <Row>
+                <Col md={2}>
+
+                </Col>
+                <Col md={{ span: 6, offset: 4 }}>
+                  <SearchBar
+                    handleSearch={handleSearch}
+                    placeholder="Search for Student | LRN"
+                  />
+                </Col>
+              </Row>
               <Row className="justify-content-md-center">
                 <Col>
                   {loading && (
