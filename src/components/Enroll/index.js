@@ -3,10 +3,11 @@ import api from "../../api/supplier";
 import MyUI from "./MyUI";
 
 import { gradesectioncolumn } from "./columns";
-const SEARCH_URI = 'https://api.github.com/search/users';
+const SEARCH_URI = "https://api.github.com/search/users";
 
 export default function Enroll() {
   const [loading, setLoading] = useState(false);
+  const [disabled, setdisabled] = useState(true);
   const [data, setData] = useState([]);
   const [classroomdata, setclassroomData] = useState([]);
   const [sectiondata, sectionsetData] = useState([]);
@@ -36,16 +37,19 @@ export default function Enroll() {
       table: "student",
       order: "id asc",
       join: "",
-      wc: `name like '%${query}%' or lrn=${query}`,
+      wc: `name like '%${query}%' or lrn='${query}'`,
       limit: "0, 10",
     };
-    const {data: studentData} = await api.post("/getDataWithJoinClause", request);
+    const { data: studentData } = await api.post(
+      "/getDataWithJoinClause",
+      request
+    );
     //console.log("response", response);
     if (studentData) {
       setData(studentData);
       setLoading(false);
     }
-  }
+  };
 
   const retrieveSections = async (term = "") => {
     const request = {
@@ -64,13 +68,16 @@ export default function Enroll() {
     }
   };
 
-  const retrieveClassroom = async (secid, term="") => {
+  const retrieveClassroom = async (secid, term = "") => {
     const request = {
       cols: "e.id,s.lrn,s.name",
       table: "enrolldet e",
-      order: "id",
+      order: "e.updatedAt desc",
       join: "left join student s on s.id=e.student",
-      wc: `e.section=${secid}${term && " and s.name like '%"+term+"%' or s.lrn like '%"+term+"%'"}`,
+      wc: `e.section=${secid}${
+        term &&
+        " and s.name like '%" + term + "%' or s.lrn like '%" + term + "%'"
+      }`,
       limit: "",
     };
     const response = await api.post("/getDataWithJoinClause", request);
@@ -84,11 +91,12 @@ export default function Enroll() {
   useEffect(() => {
     retrieveSections();
     retrieveData();
-  }, []);
+    if (selectedSection.id) {
+      setdisabled(false);
+    }
+  }, [selectedSection]);
 
-  const handleOnEdit = (d) => {
-
-  };
+  const handleOnEdit = (d) => {};
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -111,29 +119,33 @@ export default function Enroll() {
     }
   };
 
-  const handleOnSelectSection = ({id, grade, section, name}) => {
+  const handleOnSelectSection = ({ id, grade, section, name }) => {
     //console.debug(d);
     setselectedSection({ id, grade, section, name });
     retrieveClassroom(id);
   };
 
-  const handleOnAddSubject = async({id, name}) => {
+  const handleOnAddSubject = async (data) => {
     //console.debug(d);
-    setLoading(true);
-    const a = { fn: `enrollStudent(${selectedSection.id},${id})` };
-    const response = await api.post("/callSP", a).catch((err) => {
-      setLoading(false);
-      alert("cannot save error occured!");
-    });
-    if (response["data"][0].res === 1) {
-      setLoading(false);
-      //alert("saved");
-      //console.debug(response);
-      retrieveClassroom(selectedSection.id);
-    }else if (response["data"][0].res === 2) {
-      setLoading(false);
-      alert("cannot save "+name+" already exist!");
+    if (data) {
+      const { id, name } = data[0];
+      setLoading(true);
+      const a = { fn: `enrollStudent(${selectedSection.id},${id})` };
+      const response = await api.post("/callSP", a).catch((err) => {
+        setLoading(false);
+        alert("cannot save error occured!");
+      });
+      if (response["data"][0].res === 1) {
+        setLoading(false);
+        //alert("saved");
+        //console.debug(response);
+        retrieveClassroom(selectedSection.id);
+      } else if (response["data"][0].res === 2) {
+        setLoading(false);
+        alert("cannot save " + name + " already exist!");
+      }
     }
+    console.debug(data);
   };
 
   return (
@@ -150,6 +162,7 @@ export default function Enroll() {
       classroomdata={classroomdata}
       handleOnAddSubject={handleOnAddSubject}
       handleSearchAsync={handleSearchAsync}
+      disabled={disabled}
     />
   );
 }

@@ -17,7 +17,8 @@ const MyUI = ({
   handleOnSelectSection,
   classroomdata,
   handleOnAddSubject,
-  handleSearchAsync
+  handleSearchAsync,
+  disabled
 }) => {
   return (
     <div>
@@ -46,12 +47,18 @@ const MyUI = ({
                     <Col md={12}>
                       <br />
                       <div>
-                        {/* <MyDropDown
+                        <span>
+                          Type Student NAME/LRN to enroll in{" "}
+                          {selectedSection ? selectedSection.name : ""}
+                        </span>
+                        <MyDropDownV2
+                        disabled={disabled}
                           options={data}
-                          handleOnSelect={handleOnAddSubject}
-                          btnTitle="Add"
-                        /> */}
-                        <MyDropDownV2 options={data} handleSearch={handleSearchAsync} loading={loading} />
+                          handleSearch={handleSearchAsync}
+                          handleSelect={handleOnAddSubject}
+                          loading={loading}
+                          placeholder={`Search for Student NAME/LRN to enroll in ${selectedSection ? selectedSection.name : ""}`}
+                        />
                       </div>
                     </Col>
                   </Row>
@@ -62,17 +69,6 @@ const MyUI = ({
           </Card.Title>
           <Card.Text>
             <Container fluid>
-              <Row>
-                <Col md={2}>
-
-                </Col>
-                <Col md={{ span: 6, offset: 4 }}>
-                  <SearchBar
-                    handleSearch={handleSearch}
-                    placeholder="Search for Student | LRN"
-                  />
-                </Col>
-              </Row>
               <Row className="justify-content-md-center">
                 <Col>
                   {loading && (
@@ -80,7 +76,10 @@ const MyUI = ({
                       <span className="sr-only">Loading...</span>
                     </Spinner>
                   )}
-                  <span>List of Students enrolled in {selectedSection ? selectedSection.name : ""}</span>
+                  <span>
+                    List of Students enrolled in{" "}
+                    {selectedSection ? selectedSection.name : ""}
+                  </span>
                   <MyTableV2
                     pcolumns={[
                       ...gradesectioncolumn,

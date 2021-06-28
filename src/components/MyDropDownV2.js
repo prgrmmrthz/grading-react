@@ -1,8 +1,9 @@
-import { useState, Fragment } from "react";
+import { useState, createRef } from "react";
 import { Button, Dropdown, Form, FormControl, Table } from "react-bootstrap";
 import { AsyncTypeahead, Typeahead } from "react-bootstrap-typeahead";
 
-const MyDropDownV2 = ({ options, handleSearch, loading }) => {
+const MyDropDownV2 = ({ options, handleSearch, loading, placeholder, handleSelect, disabled }) => {
+  const ref=createRef();
   const filterBy = () => true;
   const [singleSelections, setSingleSelections] = useState([]);
 
@@ -12,15 +13,27 @@ const MyDropDownV2 = ({ options, handleSearch, loading }) => {
       id="async-example"
       isLoading={loading}
       labelKey="name"
-      minLength={3}
+      minLength={1}
       onSearch={handleSearch}
       options={options}
-      placeholder="Search for Student | LRN"
+      size='small'
+      placeholder={placeholder}
+      disabled={disabled}
+      ref={ref}
       renderMenuItemChildren={(option, props) => (
-        <Fragment>
-          <span>{option.name}</span>
-        </Fragment>
+        <div>
+          {option.name}
+          <div>
+            <small>LRN: {option.lrn}</small>
+          </div>
+        </div>
       )}
+      onChange={(selected) => {
+        if(selected[0]){
+          handleSelect(selected);
+          ref.current.clear();
+        }
+      }}
     />
   );
 };
