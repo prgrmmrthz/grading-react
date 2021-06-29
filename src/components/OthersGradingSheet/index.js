@@ -8,6 +8,7 @@ import {GradingSheetContext} from '../../context/GradingSheetContext';
 export default function OthersGradingSheet() {
   const [loading, setLoading] = useState(false);
   const [sectiondata, sectionsetData] = useState([]);
+  const [subjdata, subjsetData] = useState([]);
   const [selectedSection, setselectedSection] = useState({});
   const pcolumns = useMemo(() => columns, []);
   const {addData, emptyData} = useContext(GradingSheetContext);
@@ -19,7 +20,7 @@ export default function OthersGradingSheet() {
       table: "grade_section",
       order: "id",
       join: "",
-      wc: "",
+      wc: "id in (select section from classroom) and id in (select section from grading_sheet)",
       limit: "",
     };
     const response = await api
@@ -27,10 +28,10 @@ export default function OthersGradingSheet() {
     .catch((err) => {
       setLoading(false);
       console.debug("err", err);
-      alert("error occured!");
+      alert(JSON.stringify(err.message));
     });
     //console.log("response", response);
-    if (response["data"]) {
+    if (response) {
       setLoading(false);
       sectionsetData([...response["data"]]);
     }
@@ -47,24 +48,36 @@ export default function OthersGradingSheet() {
       wc: `g.section=${secid}`,
       limit: "",
     };
-    const {data: studentData} = await api.post("/getDataWithJoinClause", requestStud);
+    const studResp = await api.post("/getDataWithJoinClause", requestStud).catch((err) => {
+      setLoading(false);
+      console.debug("err", err);
+      alert(JSON.stringify(err.message));
+    });
     const requestSubj = {
-      cols: "distinct(sb.code) as name",
+      cols: "distinct(sb.code) as name, sb.name as subjName, g.subject",
       table: "grading_sheet g",
       order: "sb.name",
       join: "left join subjects sb on sb.id=g.subject",
       wc: `g.section=${secid}`,
       limit: "",
     };
-    const {data: subjectData} = await api.post("/getDataWithJoinClause", requestSubj);
-    //console.log("response", studentData);
-    studentData.forEach((v) => {
-      let a = {};
-      subjectData.forEach((s) => {
-        a[s.name]=0;
-      })
-      addData({name: v.name, ...a});
+    const subjResp = await api.post("/getDataWithJoinClause", requestSubj).catch((err) => {
+      setLoading(false);
+      console.debug("err", err);
+      alert(JSON.stringify(err.message));
     });
+    //console.log("response", studentData);
+    if(studResp && subjResp){
+      studResp.data.forEach((v) => {
+        let a = {};
+        subjResp.data.forEach((s) => {
+          a[s.name]=0;
+        })
+        addData({name: v.name, studid: v.student, ...a});
+      });
+      const a = subjResp.data.map((v) => { return {code: v.name, name: v.subjName}} );
+      subjsetData([...a]);
+    }
     setLoading(false);
   };
 
@@ -87,6 +100,7 @@ export default function OthersGradingSheet() {
       selectedSection={selectedSection}
       handleOnSelectSection={handleOnSelectSection}
       columns={pcolumns}
+      subjdata={subjdata}
     ></MyUI>
   );
 }

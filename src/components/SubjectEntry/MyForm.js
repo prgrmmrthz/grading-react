@@ -11,7 +11,7 @@ import * as yup from "yup";
 export default function MyForm({preloadedValues, onSubmit, loading}) {
   const schema = yup.object().shape({
     name: yup.string().required(),
-    code: yup.string().required()
+    code: yup.string().required().test((code) => !code.includes(' '))
   });
 
   const {

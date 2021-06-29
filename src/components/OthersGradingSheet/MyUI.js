@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Card, Row, Container, Col, Spinner } from "react-bootstrap";
+import { Card, Row, Container, Col, Spinner, ListGroup } from "react-bootstrap";
 import { GradingSheetContext } from "../../context/GradingSheetContext";
 import MyDropDown from "../MyDropDown";
 import { MyTableV3 } from "../MyTableV3";
@@ -10,6 +10,7 @@ const MyUI = ({
   handleOnSelectSection,
   loading,
   columns,
+  subjdata,
 }) => {
   const [data, setData] = useState([]);
   const { gradingData } = useContext(GradingSheetContext);
@@ -66,7 +67,7 @@ const MyUI = ({
                     </Spinner>
                   )}
                   <Row>
-                    <Col>
+                    <Col md={2}>
                       <div>
                         <span>
                           Grade & Section:{" "}
@@ -78,6 +79,13 @@ const MyUI = ({
                           btnTitle="Change"
                         />
                       </div>
+                    </Col>
+                    <Col>
+                      {subjdata.map((v) => (
+                        <div className="d-inline-flex p-2">
+                          <small className="font-weight-bold">{v.code}</small>-<small className="font-italic">{v.name}</small>
+                        </div>
+                      ))}
                     </Col>
                   </Row>
                 </Card.Body>
