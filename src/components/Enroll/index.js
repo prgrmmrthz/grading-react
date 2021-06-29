@@ -92,7 +92,7 @@ export default function Enroll() {
       console.error('error', JSON.stringify(err.message));
       alert(JSON.stringify(err.message));
     });
-    //console.log("response", response);
+    console.log("response", response);
     if (response) {
       setLoading(false);
       setclassroomData([...response.data]);
