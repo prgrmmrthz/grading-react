@@ -24,7 +24,7 @@ export default function Enroll() {
     };
     const response = await api.post("/getDataWithJoinClause", request);
     //console.log("response", response);
-    if (response["data"]) {
+    if (response) {
       setLoading(false);
       setData(response["data"]);
     }
@@ -40,13 +40,17 @@ export default function Enroll() {
       wc: `name like '%${query}%' or lrn='${query}'`,
       limit: "0, 10",
     };
-    const { data: studentData } = await api.post(
+    const response = await api.post(
       "/getDataWithJoinClause",
       request
-    );
+    ).catch((err) => {
+      setLoading(false);
+      console.error('error', JSON.stringify(err.message));
+      alert(JSON.stringify(err.message));
+    });
     //console.log("response", response);
-    if (studentData) {
-      setData(studentData);
+    if (response) {
+      setData([...response["data"]]);
       setLoading(false);
     }
   };
@@ -57,14 +61,17 @@ export default function Enroll() {
       table: "grade_section",
       order: "id",
       join: "",
-      wc: "",
+      wc: "id in (select section from classroom)",
       limit: "",
     };
-    const response = await api.post("/getDataWithJoinClause", request);
-    //console.log("response", response);
-    if (response["data"]) {
+    const response = await api.post("/getDataWithJoinClause", request).catch((err) => {
       setLoading(false);
-      sectionsetData([...response["data"]]);
+      console.error('error', JSON.stringify(err.message));
+      alert(JSON.stringify(err.message));
+    });
+    if (response) {
+      setLoading(false);
+      sectionsetData([...response.data]);
     }
   };
 
@@ -80,11 +87,15 @@ export default function Enroll() {
       }`,
       limit: "",
     };
-    const response = await api.post("/getDataWithJoinClause", request);
-    //console.log("response", response);
-    if (response["data"]) {
+    const response = await api.post("/getDataWithJoinClause", request).catch((err) => {
       setLoading(false);
-      setclassroomData([...response["data"]]);
+      console.error('error', JSON.stringify(err.message));
+      alert(JSON.stringify(err.message));
+    });
+    //console.log("response", response);
+    if (response) {
+      setLoading(false);
+      setclassroomData([...response.data]);
     }
   };
 
