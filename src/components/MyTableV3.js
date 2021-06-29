@@ -5,7 +5,7 @@ import { Styles } from "./TableStyles";
 
 const EditableCell = ({
   value: initialValue,
-  row: {index},
+  row: {index, original},
   column: {id},
   updateMyData
 }) => {
@@ -16,7 +16,7 @@ const EditableCell = ({
   }
 
   const onBlur = () => {
-    updateMyData(index, id, value)
+    updateMyData(index, id, value, original)
   }
 
   useEffect(() => {
@@ -38,24 +38,14 @@ export const MyTableV3 = ({ columns, data, updateMyData, skipPageReset }) => {
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    rows,
-    page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
+    rows
   } = useTable(
     {
       columns,
       data,
       defaultColumn,
       autoResetPage: !skipPageReset,
-      initialState: { pageIndex: 2 },
+      initialState: { hiddenColumns: ['studid'] },
       updateMyData
     },
     useBlockLayout,

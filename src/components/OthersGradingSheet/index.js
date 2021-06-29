@@ -37,6 +37,25 @@ export default function OthersGradingSheet() {
     }
   };
 
+  const handlePlotGrade = async ({subj, score, studid}) => {
+    setLoading(true);
+    const {id: sec}= selectedSection;
+    const  {id: subjId} = subjdata.find((v) => {return v.code === subj});
+    //console.debug('subjid', subjId);
+    //psec int, pstud int, psubj int, pscore text
+    const a = { fn: `updateGrade(${sec},${studid},${subjId},'${score}')` };
+    const response = await api.post("/callSP", a).catch((err) => {
+      setLoading(false);
+      console.debug("err", JSON.stringify(err.message));
+    });
+    if (response) {
+      setLoading(false);
+      console.debug('resp',response.data[0].res);
+      //console.debug(response);
+      //retrieveClassroom(selectedSection.id);
+    }
+  }
+
   const retrieveData = async (secid) => {
     //setdata([]);
     setLoading(true);
@@ -75,7 +94,7 @@ export default function OthersGradingSheet() {
         })
         addData({name: v.name, studid: v.student, ...a});
       });
-      const a = subjResp.data.map((v) => { return {code: v.name, name: v.subjName}} );
+      const a = subjResp.data.map((v) => { return {id: v.subject, code: v.name, name: v.subjName}} );
       subjsetData([...a]);
     }
     setLoading(false);
@@ -101,6 +120,7 @@ export default function OthersGradingSheet() {
       handleOnSelectSection={handleOnSelectSection}
       columns={pcolumns}
       subjdata={subjdata}
+      handlePlotGrade={handlePlotGrade}
     ></MyUI>
   );
 }

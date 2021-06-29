@@ -11,6 +11,7 @@ const MyUI = ({
   loading,
   columns,
   subjdata,
+  handlePlotGrade
 }) => {
   const [data, setData] = useState([]);
   const { gradingData } = useContext(GradingSheetContext);
@@ -37,7 +38,7 @@ const MyUI = ({
     //console.debug(await Object.keys(objKeys[0]));
   }, [gradingData]);
 
-  const updateMyData = (rowIndex, columnId, value) => {
+  const updateMyData = (rowIndex, columnId, value, {studid}) => {
     setSkipPageReset(true);
     setData((old) =>
       old.map((row, index) => {
@@ -50,6 +51,9 @@ const MyUI = ({
         return row;
       })
     );
+    //console.debug({columnId, value, studid});
+    const a = {subj: columnId, score: value, studid};
+    handlePlotGrade(a);
   };
 
   return (
@@ -83,7 +87,7 @@ const MyUI = ({
                     <Col>
                       {subjdata.map((v) => (
                         <div className="d-inline-flex p-2">
-                          <small className="font-weight-bold">{v.code}</small>-<small className="font-italic">{v.name}</small>
+                          <small className="font-weight-bold">{v.code}</small> - <small className="font-italic">{v.name}</small>
                         </div>
                       ))}
                     </Col>
