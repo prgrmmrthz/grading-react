@@ -1,14 +1,6 @@
 export const columns = [
   {
-    Header: () => (
-      <div
-        style={{
-          width: 250,
-        }}
-      >
-        Name
-      </div>
-    ),
+    Header:"Name",
     accessor: 'name',
     sticky: 'left'
   }

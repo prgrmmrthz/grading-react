@@ -4,6 +4,7 @@ export const Styles = styled.div`
   /* This is required to make the table full-width */
   display: block;
   max-width: 100%;
+  overflow: auto;
 
   /* This will make the table scrollable when it gets too small */
   .tableWrap {
@@ -60,10 +61,12 @@ export const Styles = styled.div`
       .body {
         position: relative;
         z-index: 0;
+        width: fit-content;
       }
 
       [data-sticky-td] {
         position: sticky;
+        width: fit-content;
       }
 
       [data-sticky-last-left-td] {

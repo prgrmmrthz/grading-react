@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/supplier";
 import MyUI from "./MyUI";
+import { useHistory } from "react-router-dom";
 
 import { gradesectioncolumn } from "./columns";
 const SEARCH_URI = "https://api.github.com/search/users";
 
 export default function Enroll() {
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [disabled, setdisabled] = useState(true);
   const [data, setData] = useState([]);
@@ -70,8 +72,13 @@ export default function Enroll() {
       alert(JSON.stringify(err.message));
     });
     if (response) {
+      if(response.data.length){
+        sectionsetData([...response.data]);
+      }else{
+        alert('No Classroom Set up detected! Please configure classroom first!');
+        history.push("/classroom-setup");
+      }
       setLoading(false);
-      sectionsetData([...response.data]);
     }
   };
 

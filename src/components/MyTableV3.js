@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useTable, useBlockLayout } from "react-table";
+import { useTable, useBlockLayout, useResizeColumns } from "react-table";
 import { useSticky } from "react-table-sticky";
 import { Styles } from "./TableStyles";
 

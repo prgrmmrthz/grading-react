@@ -20,7 +20,7 @@ export default function OthersGradingSheet() {
       table: "grade_section",
       order: "id",
       join: "",
-      wc: "id in (select section from classroom) and id in (select section from grading_sheet)",
+      wc: "id in (select section from classroom)",
       limit: "",
     };
     const response = await api
@@ -61,7 +61,7 @@ export default function OthersGradingSheet() {
     setLoading(true);
     const requestStud = {
       cols: "distinct(s.name) as name, g.student",
-      table: "grading_sheet g",
+      table: "enrolldet g",
       order: "s.name",
       join: "left join student s on s.id=g.student",
       wc: `g.section=${secid}`,
@@ -74,7 +74,7 @@ export default function OthersGradingSheet() {
     });
     const requestSubj = {
       cols: "distinct(sb.code) as name, sb.name as subjName, g.subject",
-      table: "grading_sheet g",
+      table: "classroom g",
       order: "sb.name",
       join: "left join subjects sb on sb.id=g.subject",
       wc: `g.section=${secid}`,
@@ -103,6 +103,9 @@ export default function OthersGradingSheet() {
   useEffect(() => {
     document.body.classList.toggle("sb-sidenav-toggled");
     retrieveSections();
+    return () => {
+      emptyData();
+    }
   }, []);
 
   const handleOnSelectSection = ({ id, grade, section, name }) => {
