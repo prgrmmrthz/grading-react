@@ -113,29 +113,7 @@ const MyUI = ({
                   <MyTableV3
                     data={data}
                     columns={[
-                      ...nCol,
-                      {
-                        Header: () => (
-                          <div
-                            style={{
-                              width: 5,
-                            }}
-                          ></div>
-                        ),
-                        id: "delete",
-                        accessor: (str) => "delete",
-                        Cell: ({ row }) => (
-                          <button
-                            onClick={() => {
-                              //console.debug('to del', row.original.id);
-                              //data.splice(row.index, 1)
-                              console.debug(row.original);
-                            }}
-                          >
-                            save
-                          </button>
-                        ),
-                      },
+                      ...nCol
                     ]}
                     updateMyData={updateMyData}
                     skipPageReset={skipPageReset}

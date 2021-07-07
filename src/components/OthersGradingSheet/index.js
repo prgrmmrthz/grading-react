@@ -38,7 +38,7 @@ export default function OthersGradingSheet() {
   };
 
   const handlePlotGrade = async ({subj, score, studid}) => {
-    setLoading(true);
+    //setLoading(true);
     const {id: sec}= selectedSection;
     const  {id: subjId} = subjdata.find((v) => {return v.code === subj});
     //console.debug('subjid', subjId);

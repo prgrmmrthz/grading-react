@@ -23,7 +23,11 @@ const EditableCell = ({
     setValue(initialValue);
   }, [initialValue])
 
-  return <input value={value} onChange={onChange} onBlur={onBlur} />
+  if(id === 'name'){
+    return <span>{value}</span>
+  }else{
+    return <input value={value} onChange={onChange} onBlur={onBlur} style={{width: "80px"}} />
+  }
 }
 
 const defaultColumn = {

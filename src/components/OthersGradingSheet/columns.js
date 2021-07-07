@@ -3,7 +3,7 @@ export const columns = [
     Header: () => (
       <div
         style={{
-          width: 750,
+          width: 250,
         }}
       >
         Name
