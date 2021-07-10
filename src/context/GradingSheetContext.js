@@ -19,6 +19,13 @@ export const GradingSheetProvider = (props) => {
         });
     }
 
+    function setData(data){
+        dispatch({
+            type: 'SETDATA',
+            payload: data
+        });
+    }
+
     function emptyData(){
         dispatch({
             type: 'EMPTY'
@@ -29,7 +36,8 @@ export const GradingSheetProvider = (props) => {
         <GradingSheetContext.Provider value={{
            gradingData: state.gradingData,
            addData,
-           emptyData
+           emptyData,
+           setData
         }}>
             {props.children}
         </GradingSheetContext.Provider>

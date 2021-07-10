@@ -10,6 +10,11 @@ const GradingSheetReducer = (state, action) => {
         ...state,
         gradingData: [],
       };
+    case "SETDATA":
+      return {
+        ...state,
+        gradingData: [...action.payload]
+      };
     default:
       return state;
   }
