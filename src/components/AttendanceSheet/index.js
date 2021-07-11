@@ -3,15 +3,15 @@ import React, { useState, useEffect, useMemo, useContext } from "react";
 import api from "../../api/supplier";
 import { columns } from "./columns";
 import MyUI from "./MyUI";
-import { GradingSheetContext } from "../../context/GradingSheetContext";
+import { AttendanceSheetContext } from "../../context/AttendanceSheetContext";
 
-export default function OthersGradingSheet() {
+export default function AttendanceSheet() {
   const [loading, setLoading] = useState(false);
   const [sectiondata, sectionsetData] = useState([]);
   const [subjdata, subjsetData] = useState([]);
   const [selectedSection, setselectedSection] = useState({});
   const pcolumns = useMemo(() => columns, []);
-  const { emptyData, setData } = useContext(GradingSheetContext);
+  const { emptyData, setData } = useContext(AttendanceSheetContext);
 
   const retrieveSections = async (term = "") => {
     setLoading(true);
@@ -58,9 +58,9 @@ export default function OthersGradingSheet() {
     }
   };
 
-  const retrieveGradingSheet = async (secid) => {
+  const retrieveSheet = async (secid) => {
     //setLoading(true);
-    const a = { fn: `getGradingSheet(${secid})` };
+    const a = { fn: `getAttendanceSheet(${secid})` };
     const response = await api.post("/callSP", a).catch((err) => {
       setLoading(false);
       console.debug("err", JSON.stringify(err.message));
@@ -69,32 +69,6 @@ export default function OthersGradingSheet() {
       //console.debug("resp", response.data);
       setData([...response.data]);
       setLoading(false);
-    }
-  };
-
-  const retrieveData = async (secid) => {
-    //setdata([]);
-    setLoading(true);
-    const requestSubj = {
-      cols: "distinct(sb.code) as name, sb.name as subjName, g.subject",
-      table: "classroom g",
-      order: "sb.name",
-      join: "left join subjects sb on sb.id=g.subject",
-      wc: `g.section=${secid}`,
-      limit: "",
-    };
-    const subjResp = await api
-      .post("/getDataWithJoinClause", requestSubj)
-      .catch((err) => {
-        setLoading(false);
-        console.debug("err", err);
-        alert(JSON.stringify(err.message));
-      });
-    if (subjResp) {
-      const a = subjResp.data.map((v) => {
-        return { id: v.subject, code: v.name, name: v.subjName };
-      });
-      subjsetData([...a]);
     }
   };
 
@@ -110,8 +84,7 @@ export default function OthersGradingSheet() {
     //console.debug(d);
     setselectedSection({ id, grade, section, name });
     emptyData();
-    retrieveData(id);
-    retrieveGradingSheet(id);
+    retrieveSheet(id);
   };
 
   return (
@@ -121,7 +94,6 @@ export default function OthersGradingSheet() {
       selectedSection={selectedSection}
       handleOnSelectSection={handleOnSelectSection}
       columns={pcolumns}
-      subjdata={subjdata}
       handlePlotGrade={handlePlotGrade}
     ></MyUI>
   );

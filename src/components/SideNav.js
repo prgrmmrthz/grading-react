@@ -20,8 +20,8 @@ export default function SideNav() {
     {
       group: "Transactions",
       links2: [
-        { text: "Grading Sheet", link: "/grading-sheet" },
-        { text: "Grading Sheet (Others)", link: "/others-grading-sheet" },
+        { text: "Attendance Sheet", link: "/attendance-sheet" },
+        { text: "Grading Sheet", link: "/others-grading-sheet" },
       ],
     },
   ]);

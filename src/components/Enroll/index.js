@@ -4,7 +4,6 @@ import MyUI from "./MyUI";
 import { useHistory } from "react-router-dom";
 
 import { gradesectioncolumn } from "./columns";
-const SEARCH_URI = "https://api.github.com/search/users";
 
 export default function Enroll() {
   const history = useHistory();
@@ -159,14 +158,16 @@ export default function Enroll() {
         setLoading(false);
         alert("cannot save error occured!");
       });
-      if (response["data"][0].res === 1) {
-        setLoading(false);
-        //alert("saved");
-        //console.debug(response);
-        retrieveClassroom(selectedSection.id);
-      } else if (response["data"][0].res === 2) {
-        setLoading(false);
-        alert("cannot save " + name + " already exist!");
+      if(response){
+        if (response["data"][0].res === 1) {
+          setLoading(false);
+          //alert("saved");
+          //console.debug(response);
+          retrieveClassroom(selectedSection.id);
+        } else if (response["data"][0].res === 2) {
+          setLoading(false);
+          alert("cannot save " + name + " already exist!");
+        }
       }
     }
     console.debug(data);

@@ -7,17 +7,20 @@ import MyNavbar from "./components/MyNavbar";
 import MainPage from "./components/MainPage";
 import { AuthProvider } from "./context/AuthContext";
 import { GradingSheetProvider } from "./context/GradingSheetContext";
+import { AttendanceSheetProvider } from "./context/AttendanceSheetContext";
 
 function App() {
   return (
     <AuthProvider>
       <GradingSheetProvider>
-        <Router>
-          <div className="App">
-            <MyNavbar />
-            <MainPage />
-          </div>
-        </Router>
+        <AttendanceSheetProvider>
+          <Router>
+            <div className="App">
+              <MyNavbar />
+              <MainPage />
+            </div>
+          </Router>
+        </AttendanceSheetProvider>
       </GradingSheetProvider>
     </AuthProvider>
   );

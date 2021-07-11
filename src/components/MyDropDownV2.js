@@ -1,11 +1,9 @@
-import { useState, createRef } from "react";
-import { Button, Dropdown, Form, FormControl, Table } from "react-bootstrap";
-import { AsyncTypeahead, Typeahead } from "react-bootstrap-typeahead";
+import { createRef } from "react";
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
 
 const MyDropDownV2 = ({ options, handleSearch, loading, placeholder, handleSelect, disabled }) => {
   const ref=createRef();
   const filterBy = () => true;
-  const [singleSelections, setSingleSelections] = useState([]);
 
   return (
     <AsyncTypeahead

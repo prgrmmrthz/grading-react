@@ -17,7 +17,7 @@ import StudentEntry from "./StudentEntry";
 import SubjectEntry from "./SubjectEntry";
 import ClassroomSetup from "./ClassroomSetup";
 import Enroll from "./Enroll";
-import GradingSheet from "./GradingSheet";
+import AttendanceSheet from "./AttendanceSheet";
 import OthersGradingSheet from "./OthersGradingSheet";
 
 function MainPage() {
@@ -54,8 +54,8 @@ function MainPage() {
               <Route exact path="/enroll">
                 <Protected cmp={Enroll} />
               </Route>
-              <Route exact path="/grading-sheet">
-                <Protected cmp={GradingSheet} />
+              <Route exact path="/attendance-sheet">
+                <Protected cmp={AttendanceSheet} />
               </Route>
               <Route exact path="/others-grading-sheet">
                 <Protected cmp={OthersGradingSheet} />

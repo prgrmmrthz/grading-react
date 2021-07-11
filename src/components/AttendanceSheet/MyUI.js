@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Card, Row, Container, Col, Spinner } from "react-bootstrap";
-import { GradingSheetContext } from "../../context/GradingSheetContext";
+import { AttendanceSheetContext } from "../../context/AttendanceSheetContext";
 import MyDropDown from "../MyDropDown";
 import { MyTableV3 } from "../MyTableV3";
 
@@ -10,21 +10,20 @@ const MyUI = ({
   handleOnSelectSection,
   loading,
   columns,
-  subjdata,
   handlePlotGrade
 }) => {
   const [data, setData] = useState([]);
-  const { gradingData } = useContext(GradingSheetContext);
+  const { attendanceSheetData } = useContext(AttendanceSheetContext);
   const [nCol, setCol] = useState(columns);
   const [nLoadingColumns, setLoadingColumns] = useState(false);
   const [skipPageReset, setSkipPageReset] = useState(false);
 
   useEffect(() => {
     setSkipPageReset(false);
-    setData(gradingData);
+    setData(attendanceSheetData);
     setLoadingColumns(true);
-    if (gradingData.length > 0) {
-      const col = Object.keys(gradingData[0]).map((v) => {
+    if (attendanceSheetData.length > 0) {
+      const col = Object.keys(attendanceSheetData[0]).map((v) => {
         return { Header: v, accessor: v, sticky: v === "name" ? "left" : "" };
       });
       setCol(col);
@@ -34,9 +33,9 @@ const MyUI = ({
       setLoadingColumns(false);
     }
     //map(v => { return {Header: v, accessor: v}})
-    //const objKeys = await gradingData;
+    //const objKeys = await attendanceSheetData;
     //console.debug(await Object.keys(objKeys[0]));
-  }, [gradingData]);
+  }, [attendanceSheetData]);
 
   const updateMyData = (rowIndex, columnId, value, {studid}) => {
     setSkipPageReset(true);
@@ -53,13 +52,13 @@ const MyUI = ({
     );
     //console.debug({columnId, value, studid});
     const a = {subj: columnId, score: value, studid};
-    handlePlotGrade(a);
+    //handlePlotGrade(a);
   };
 
   return (
     <div>
       <Card>
-        <Card.Header>Grading Sheet</Card.Header>
+        <Card.Header>Attendance Sheet</Card.Header>
         <Card.Body>
           <Card.Title>
             <Container fluid>
@@ -71,10 +70,10 @@ const MyUI = ({
                     </Spinner>
                   )}
                   <Row>
-                    <Col md={2}>
+                    <Col>
                       <div>
                         <span>
-                          Grade & Section:{" "}
+                          Select grade and section:{" "}
                           {selectedSection ? selectedSection.name : ""}
                         </span>
                         <MyDropDown
@@ -83,13 +82,6 @@ const MyUI = ({
                           btnTitle="Change"
                         />
                       </div>
-                    </Col>
-                    <Col>
-                      {subjdata.map((v) => (
-                        <div className="d-inline-flex p-2">
-                          <small className="font-weight-bold">{v.code}</small> - <small className="font-italic">{v.name}</small>
-                        </div>
-                      ))}
                     </Col>
                   </Row>
                 </Card.Body>
