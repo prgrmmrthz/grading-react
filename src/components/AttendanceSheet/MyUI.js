@@ -52,7 +52,7 @@ const MyUI = ({
     );
     //console.debug({columnId, value, studid});
     const a = {subj: columnId, score: value, studid};
-    //handlePlotGrade(a);
+    handlePlotGrade(a);
   };
 
   return (

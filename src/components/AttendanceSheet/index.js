@@ -37,15 +37,41 @@ export default function AttendanceSheet() {
     }
   };
 
+  const retrieveData = async () => {
+    //setdata([]);
+    setLoading(true);
+    const requestSubj = {
+      cols: "distinct(sb.month) as name, g.ac_id",
+      table: "schoolyear_setup g",
+      order: "",
+      join: "left join attendance_calendar sb on sb.id=g.ac_id",
+      wc: `g.sy_id=1`,
+      limit: "",
+    };
+    const subjResp = await api
+      .post("/getDataWithJoinClause", requestSubj)
+      .catch((err) => {
+        setLoading(false);
+        console.debug("err", err);
+        alert(JSON.stringify(err.message));
+      });
+    if (subjResp) {
+      const a = subjResp.data.map((v) => {
+        return { id: v.ac_id, code: v.name };
+      });
+      subjsetData([...a]);
+    }
+  };
+
   const handlePlotGrade = async ({ subj, score, studid }) => {
     //setLoading(true);
     const { id: sec } = selectedSection;
-    const { id: subjId } = subjdata.find((v) => {
+    const { id: ac_id } = subjdata.find((v) => {
       return v.code === subj;
     });
     //console.debug('subjid', subjId);
     //psec int, pstud int, psubj int, pscore text
-    const a = { fn: `updateGrade(${sec},${studid},${subjId},'${score}')` };
+    const a = { fn: `updateAttendanceSheet(${sec},${studid},${ac_id},${score})` };
     const response = await api.post("/callSP", a).catch((err) => {
       setLoading(false);
       console.debug("err", JSON.stringify(err.message));
@@ -75,6 +101,7 @@ export default function AttendanceSheet() {
   useEffect(() => {
     document.body.classList.toggle("sb-sidenav-toggled");
     retrieveSections();
+    retrieveData();
     return () => {
       emptyData();
     };
