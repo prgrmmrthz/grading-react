@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
-
+import { useHistory } from "react-router-dom";
 import api from "../../api/supplier";
 import { columns } from "./columns";
 import MyUI from "./MyUI";
 import { GradingSheetContext } from "../../context/GradingSheetContext";
 
 export default function OthersGradingSheet() {
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [sectiondata, sectionsetData] = useState([]);
   const [subjdata, subjsetData] = useState([]);
@@ -32,9 +33,14 @@ export default function OthersGradingSheet() {
       });
     //console.log("response", response);
     if (response) {
-      setLoading(false);
-      sectionsetData([...response["data"]]);
+      if(response.data.length){
+        sectionsetData([...response["data"]]);
+      }else{
+        alert('No Classroom Set up / Enrollment detected! Please configure classroom / enroll student first!');
+        history.push("/enroll");
+      }
     }
+    setLoading(false);
   };
 
   const handlePlotGrade = async ({ subj, score, studid }) => {
