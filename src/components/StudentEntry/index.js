@@ -21,7 +21,10 @@ export default function StudentEntry() {
       wc: term ? `name like '%${term}%' or lrn like '%${term}%'` : "",
       limit: "",
     };
-    const response = await api.post("/getDataWithJoinClause", request);
+    const response = await api.post("/getDataWithJoinClause", request).catch((err) => {
+      setLoading(false);
+      alert("cannot save error occured!");
+    });;
     //console.log("response", response);
     if (response["data"]) {
       setLoading(false);
@@ -46,7 +49,7 @@ export default function StudentEntry() {
     setLoading(true);
     let p = "";
     if (mode === 2) {
-      p = `updateStudent('${name}',${age},'${sex}','${lrn}','${bdF}',${id})`;
+      p = `updateStudent("${name}",${age},'${sex}','${lrn}','${bdF}',${id})`;
     } else {
       //pname text, page int, psex text, plrn text, pbirthday text
       p = `insertStudent('${name}',${age},'${sex}','${lrn}','${bdF}')`;

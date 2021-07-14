@@ -5,56 +5,18 @@ import { useHistory } from "react-router-dom";
 
 import { gradesectioncolumn } from "./columns";
 
-export default function Enroll() {
+export default function Form138() {
+  const [openModal, setOpenModal] = useState(false);
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [disabled, setdisabled] = useState(true);
   const [data, setData] = useState([]);
+  const [gradedata, setgradeData] = useState([]);
+  const [attendancedata, setattendanceData] = useState([]);
   const [classroomdata, setclassroomData] = useState([]);
   const [sectiondata, sectionsetData] = useState([]);
   const [selectedSection, setselectedSection] = useState({});
-
-  const retrieveData = async () => {
-    const request = {
-      cols: "id,name as studentname,lrn, concat(lrn, ' - ', name) as name",
-      table: "student",
-      order: "id asc",
-      join: "",
-      wc: "",
-      limit: "",
-    };
-    const response = await api.post("/getDataWithJoinClause", request);
-    //console.log("response", response);
-    if (response) {
-      setLoading(false);
-      setData(response["data"]);
-    }
-  };
-
-  const handleSearchAsync = async (query) => {
-    setLoading(true);
-    const request = {
-      cols: "id,name,lrn",
-      table: "student",
-      order: "id asc",
-      join: "",
-      wc: `name like '%${query}%' or lrn='${query}'`,
-      limit: "0, 10",
-    };
-    const response = await api.post(
-      "/getDataWithJoinClause",
-      request
-    ).catch((err) => {
-      setLoading(false);
-      console.error('error', JSON.stringify(err.message));
-      alert(JSON.stringify(err.message));
-    });
-    //console.log("response", response);
-    if (response) {
-      setData([...response["data"]]);
-      setLoading(false);
-    }
-  };
+  const [selectedStudent, setselectedStudent] = useState("");
 
   const retrieveSections = async (term = "") => {
     const request = {
@@ -62,7 +24,7 @@ export default function Enroll() {
       table: "grade_section",
       order: "id",
       join: "",
-      wc: "id in (select section from classroom)",
+      wc: "id in (select section from grading_sheet) and id in (select section from attendance_sheet)",
       limit: "",
     };
     const response = await api.post("/getDataWithJoinClause", request).catch((err) => {
@@ -74,8 +36,8 @@ export default function Enroll() {
       if(response.data.length){
         sectionsetData([...response.data]);
       }else{
-        alert('No Classroom Set up detected! Please configure classroom first!');
-        history.push("/classroom-setup");
+        alert('No attendance/grading sheet detected. Please fill up those sheets first!');
+        history.push("/others-grading-sheet");
       }
       setLoading(false);
     }
@@ -83,7 +45,7 @@ export default function Enroll() {
 
   const retrieveClassroom = async (secid, term = "") => {
     const request = {
-      cols: "e.id,s.lrn,s.name,e.student",
+      cols: "e.student as id,s.lrn,s.name,e.student,s.sex,s.birthday,s.age",
       table: "enrolldet e",
       order: "e.updatedAt desc",
       join: "left join student s on s.id=e.student",
@@ -98,7 +60,7 @@ export default function Enroll() {
       console.error('error', JSON.stringify(err.message));
       alert(JSON.stringify(err.message));
     });
-    console.log("response", response);
+    //console.log("response", response);
     if (response) {
       setLoading(false);
       setclassroomData([...response.data]);
@@ -118,6 +80,44 @@ export default function Enroll() {
   const handleSearch = (e) => {
     e.preventDefault();
     retrieveClassroom(selectedSection.id, e.target[0].value);
+  };
+
+  const handlePreview = async (d) => {
+    //console.debug(d);
+    const graderequest = {
+      cols: "subjectname,score",
+      table: "vallsubjectandgradesbystudent",
+      order: "name asc",
+      join: "",
+      wc: `studentid=${d.id} and section=${selectedSection.id}`,
+      limit: "",
+    };
+    const graderesponse = await api.post("/getDataWithJoinClause", graderequest).catch((err) => {
+      setLoading(false);
+      console.error('error', JSON.stringify(err.message));
+      alert(JSON.stringify(err.message));
+    });
+    const attendancerequest = {
+      cols: "month,daysofpresent",
+      table: "viewattendancesheet",
+      order: "name asc",
+      join: "",
+      wc: `studid=${d.id} and sectionid=${selectedSection.id} and sy_id=1`,
+      limit: "",
+    };
+    const attendanceresponse = await api.post("/getDataWithJoinClause", attendancerequest).catch((err) => {
+      setLoading(false);
+      console.error('error', JSON.stringify(err.message));
+      alert(JSON.stringify(err.message));
+    });
+    //console.log("response", response);
+    if (graderesponse && attendanceresponse) {
+      setselectedStudent(d.name);
+      setgradeData([...graderesponse.data]);
+      setattendanceData([...attendanceresponse.data]);
+      setOpenModal(true);
+      setLoading(false);
+    }
   };
 
   const handleOnDelete = async ({ student, name }) => {
@@ -186,8 +186,13 @@ export default function Enroll() {
       handleOnSelectSection={handleOnSelectSection}
       classroomdata={classroomdata}
       handleOnAddSubject={handleOnAddSubject}
-      handleSearchAsync={handleSearchAsync}
       disabled={disabled}
+      openModal={openModal}
+      setOpenModal={setOpenModal}
+      handlePreview={handlePreview}
+      gradedata={gradedata}
+      attendancedata={attendancedata}
+      selectedStudent={selectedStudent}
     />
   );
 }

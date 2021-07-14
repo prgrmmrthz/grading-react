@@ -24,6 +24,12 @@ export default function SideNav() {
         { text: "Grading Sheet", link: "/others-grading-sheet" },
       ],
     },
+    {
+      group: "Reports",
+      links2: [
+        { text: "Form-138", link: "/form-138" }
+      ],
+    },
   ]);
   return (
     <div id="layoutSidenav_nav">

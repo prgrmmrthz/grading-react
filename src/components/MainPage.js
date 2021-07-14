@@ -19,6 +19,7 @@ import ClassroomSetup from "./ClassroomSetup";
 import Enroll from "./Enroll";
 import AttendanceSheet from "./AttendanceSheet";
 import OthersGradingSheet from "./OthersGradingSheet";
+import Form138 from "./Form138";
 
 function MainPage() {
   const [auth] = useContext(AuthContext);
@@ -59,6 +60,9 @@ function MainPage() {
               </Route>
               <Route exact path="/others-grading-sheet">
                 <Protected cmp={OthersGradingSheet} />
+              </Route>
+              <Route exact path="/form-138">
+                <Protected cmp={Form138} />
               </Route>
               <Route path="*" component={NotFound} />
             </Switch>

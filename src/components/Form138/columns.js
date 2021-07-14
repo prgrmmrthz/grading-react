@@ -1,11 +1,10 @@
 import { format } from "date-fns";
-
 export const gradesectioncolumn = [
   {
     Header: () => (
       <div
         style={{
-          width: 20,
+          width: 50,
         }}
       >
         #
@@ -18,7 +17,7 @@ export const gradesectioncolumn = [
     Header: () => (
       <div
         style={{
-          width: 80,
+          width: 100,
         }}
       >
         LRN
@@ -30,13 +29,25 @@ export const gradesectioncolumn = [
     Header: () => (
       <div
         style={{
-          width: 200,
+          width: 180,
         }}
       >
         Name
       </div>
     ),
     accessor: "name",
+  },
+  {
+    Header: () => (
+      <div
+        style={{
+          width: 80,
+        }}
+      >
+        Sex
+      </div>
+    ),
+    accessor: "sex",
   },
   {
     Header: () => (
@@ -57,7 +68,7 @@ export const gradesectioncolumn = [
     Header: () => (
       <div
         style={{
-          width: 50,
+          width: 80,
         }}
       >
         Age
@@ -65,16 +76,4 @@ export const gradesectioncolumn = [
     ),
     accessor: "age",
   },
-  {
-    Header: () => (
-      <div
-        style={{
-          width: 100,
-        }}
-      >
-        Sex
-      </div>
-    ),
-    accessor: "sex",
-  }
 ];

@@ -28,7 +28,7 @@ export const gradesectioncolumn = [
     Header: () => (
       <div
         style={{
-          width: 550,
+          width: 450,
         }}
       >
         Name
