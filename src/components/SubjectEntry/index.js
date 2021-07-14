@@ -13,7 +13,7 @@ export default function SubjectEntry() {
 
   const retrieveData = async (term = "") => {
     const request = {
-      cols: "id,name,code",
+      cols: "id,name,code,computable",
       table: "subjects",
       order: "id asc",
       join: "",
@@ -38,15 +38,15 @@ export default function SubjectEntry() {
     setOpenModal(true);
   };
 
-  const onSubmit = async ({ name, code }) => {
+  const onSubmit = async ({ name, code, computable }) => {
     const {id} = formValues;
     setLoading(true);
     let p = "";
     if (mode === 2) {
-      p = `updateSubject('${name}','${code}',${id})`;
+      p = `updateSubject('${name}','${code}',${id},${computable ? 1 : 0})`;
     } else {
       //pname text, page int, psex text, plrn text, pbirthday text
-      p = `insertSubject('${name}','${code}')`;
+      p = `insertSubject('${name}','${code}',${computable ? 1 : 0})`;
     }
     const a = { fn: p };
     const response = await api.post("/callSP", a).catch((err) => {

@@ -28,12 +28,27 @@ export const gradesectioncolumn = [
     Header: () => (
       <div
         style={{
-          width: 650,
+          width: 400,
         }}
       >
         Subject
       </div>
     ),
     accessor: "name",
-  }
+  },
+  {
+    Header: () => (
+      <div
+        style={{
+          width: 150,
+        }}
+      >
+        Computable
+      </div>
+    ),
+    accessor: "computable",
+    Cell: ({ value }) => {
+      return value? 'Yes':'No';
+    }
+  },
 ];

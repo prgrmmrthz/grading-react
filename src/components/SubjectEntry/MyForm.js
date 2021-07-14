@@ -1,17 +1,17 @@
-import React, {useEffect} from "react";
-import {
-  Button,
-  Form,
-  Spinner,
-} from "react-bootstrap";
+import React, { useEffect } from "react";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-export default function MyForm({preloadedValues, onSubmit, loading}) {
+export default function MyForm({ preloadedValues, onSubmit, loading }) {
   const schema = yup.object().shape({
     name: yup.string().required(),
-    code: yup.string().required().test((code) => !code.includes(' '))
+    code: yup
+      .string()
+      .required()
+      .test((code) => !code.includes(" ")),
+    computable: yup.bool(),
   });
 
   const {
@@ -24,17 +24,18 @@ export default function MyForm({preloadedValues, onSubmit, loading}) {
     resolver: yupResolver(schema),
   });
 
-  const submitForm = (data) =>{
+  const submitForm = (data) => {
     onSubmit(data);
-  }
+  };
 
   useEffect(() => {
     //console.debug(preloadedValues);
     if (preloadedValues) {
-      const { name, code} = preloadedValues;
-      setValue('name', name);
-      setValue('code', code);
-      setFocus('code');
+      const { name, code, computable } = preloadedValues;
+      setValue("name", name);
+      setValue("code", code);
+      setValue("computable", computable);
+      setFocus("code");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preloadedValues]);
@@ -60,6 +61,9 @@ export default function MyForm({preloadedValues, onSubmit, loading}) {
           {...register("name")}
         />
         <p>{errors.name?.message}</p>
+      </Form.Group>
+      <Form.Group className="mb-3" id="formGridCheckbox">
+        <Form.Check type="checkbox" label="Computable" {...register("computable")} />
       </Form.Group>
       <Button variant="primary" type="submit" disabled={loading}>
         {loading && (
