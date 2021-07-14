@@ -19,7 +19,7 @@ export const gradesectioncolumn = [
           width: 250,
         }}
       >
-        Subject Code
+        Code
       </div>
     ),
     accessor: "code",
@@ -28,7 +28,7 @@ export const gradesectioncolumn = [
     Header: () => (
       <div
         style={{
-          width: 750,
+          width: 450,
         }}
       >
         Subject

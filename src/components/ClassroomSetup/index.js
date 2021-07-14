@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../api/supplier";
+import classroomapi from "../../api/classroom";
 import MyUI from "./MyUI";
 
 import { gradesectioncolumn } from "./columns";
@@ -50,16 +51,19 @@ export default function ClassroomSetup() {
 
   const retrieveClassroom = async (secid, term="") => {
     const request = {
-      cols: "c.id,c.subject as subjectid,s.name as subject, s.code",
+      cols: "Distinct c.subject as subjectid, s.name as subject, s.code",
       table: "classroom c",
-      order: "id desc",
+      order: "c.id desc",
       join: "left join subjects s on s.id=c.subject",
       wc: `c.section=${secid}${term && " and s.name like '%"+term+"%'"}`,
       limit: "",
     };
-    const response = await api.post("/getDataWithJoinClause", request);
+    const response = await api.post("/getDataWithJoinClause", request).catch((err) => {
+      setLoading(false);
+      alert("cannot save error occured!");
+    });
     //console.log("response", response);
-    if (response["data"]) {
+    if (response) {
       setLoading(false);
       setclassroomData([...response["data"]]);
     }
@@ -70,56 +74,16 @@ export default function ClassroomSetup() {
     retrieveData();
   }, []);
 
-  const onNew = () => {
-    setFormValues({});
-    setMode(1);
-    setOpenModal(true);
-  };
-
-  const onSubmit = async ({ name }, e) => {
-    const {id} = formValues;
-    setLoading(true);
-    let p = "";
-    if (mode === 2) {
-      p = `updateSubject('${name}',${id})`;
-    } else {
-      //pname text, page int, psex text, plrn text, pbirthday text
-      p = `insertSubject('${name}')`;
-    }
-    const a = { fn: p };
-    const response = await api.post("/callSP", a).catch((err) => {
-      setLoading(false);
-      alert("cannot save error occured!");
-    });
-    if (response["data"][0].res === 1) {
-      setLoading(false);
-      alert("saved");
-      setOpenModal(false);
-      //console.debug(response);
-      retrieveData();
-    } else if (response["data"][0].res === 3) {
-      setLoading(false);
-      alert("cannot save "+name+" already exist!");
-    } else if (response["data"][0].res === 2) {
-      setLoading(false);
-      alert("cannot save "+name+" already exist!");
-    }
-  };
-
-  const handleOnEdit = (d) => {
-
-  };
-
   const handleSearch = (e) => {
     e.preventDefault();
     retrieveClassroom(selectedSection.id, e.target[0].value);
   };
 
-  const handleOnDelete = async ({ id, subject }) => {
+  const handleOnDelete = async ({ id, subject, subjectid }) => {
     if (window.confirm(`Delete ${subject}?`)) {
       setLoading(true);
-      const response = await api
-        .delete(`/Delete?id=${id}&table=classroom&wc=id`)
+      const response = await classroomapi
+        .delete(`/deleteBySubjSection?sec=${selectedSection.id}&subj=${subjectid}`)
         .catch((err) => {
           setLoading(false);
           console.debug("err", err);
@@ -127,7 +91,10 @@ export default function ClassroomSetup() {
         });
       if (response) {
         retrieveClassroom(selectedSection.id);
+      }else{
+        alert("cannot delete!");
       }
+      setLoading(false);
     }
   };
 
@@ -145,30 +112,29 @@ export default function ClassroomSetup() {
       setLoading(false);
       alert("cannot save error occured!");
     });
-    if (response["data"][0].res === 1) {
-      setLoading(false);
-      //alert("saved");
-      //console.debug(response);
-      retrieveClassroom(selectedSection.id);
-    }else if (response["data"][0].res === 2) {
-      setLoading(false);
-      alert("cannot save "+name+" already exist!");
+    if(response){
+      if (response["data"][0].res > 1) {
+        setLoading(false);
+        //alert("saved");
+        //console.debug(response);
+        retrieveClassroom(selectedSection.id);
+      }else if (response["data"][0].res === 0) {
+        setLoading(false);
+        alert("cannot save "+name+" already exist!");
+      }
     }
   };
 
   return (
     <MyUI
-      onNew={onNew}
       handleSearch={handleSearch}
       loading={loading}
       data={data}
-      handleOnEdit={handleOnEdit}
       handleOnDelete={handleOnDelete}
       openModal={openModal}
       setOpenModal={setOpenModal}
       mode={mode}
       formValues={formValues}
-      onSubmit={onSubmit}
       gradesectioncolumn={gradesectioncolumn}
       sectiondata={sectiondata}
       selectedSection={selectedSection}
