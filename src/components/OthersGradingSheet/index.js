@@ -9,8 +9,10 @@ export default function OthersGradingSheet() {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [sectiondata, sectionsetData] = useState([]);
+  const [quarterdata, quartersetData] = useState([]);
   const [subjdata, subjsetData] = useState([]);
   const [selectedSection, setselectedSection] = useState({});
+  const [selectedQuarter, setselectedQuarter] = useState({});
   const pcolumns = useMemo(() => columns, []);
   const { emptyData, setData } = useContext(GradingSheetContext);
 
@@ -43,15 +45,45 @@ export default function OthersGradingSheet() {
     setLoading(false);
   };
 
+  const retrieveQuarter = async () => {
+    setLoading(true);
+    const request = {
+      cols: "id,quarter as name",
+      table: "quarter",
+      order: "id",
+      join: "",
+      wc: "sy_id=1",
+      limit: "",
+    };
+    const response = await api
+      .post("/getDataWithJoinClause", request)
+      .catch((err) => {
+        setLoading(false);
+        console.debug("err", err);
+        alert(JSON.stringify(err.message));
+      });
+    //console.log("response", response);
+    if (response) {
+      if(response.data.length){
+        quartersetData([...response["data"]]);
+        setselectedQuarter({...response['data'][0]})
+      }else{
+        alert('No Quarter Entry detected! Please contact developer!');
+      }
+    }
+    setLoading(false);
+  };
+
   const handlePlotGrade = async ({ subj, score, studid }) => {
     //setLoading(true);
     const { id: sec } = selectedSection;
+    const { id: quarter } = selectedQuarter;
     const { id: subjId } = subjdata.find((v) => {
       return v.code === subj;
     });
     //console.debug('subjid', subjId);
     //psec int, pstud int, psubj int, pscore text
-    const a = { fn: `updateGrade(${sec},${studid},${subjId},'${score}')` };
+    const a = { fn: `updateGrade(${sec},${studid},${subjId},'${score}',${quarter})` };
     const response = await api.post("/callSP", a).catch((err) => {
       setLoading(false);
       console.debug("err", JSON.stringify(err.message));
@@ -64,9 +96,9 @@ export default function OthersGradingSheet() {
     }
   };
 
-  const retrieveGradingSheet = async (secid) => {
+  const retrieveGradingSheet = async (secid,quarterid) => {
     //setLoading(true);
-    const a = { fn: `getGradingSheet(${secid})` };
+    const a = { fn: `getGradingSheet(${secid},${quarterid})` };
     const response = await api.post("/callSP", a).catch((err) => {
       setLoading(false);
       console.debug("err", JSON.stringify(err.message));
@@ -107,6 +139,7 @@ export default function OthersGradingSheet() {
   useEffect(() => {
     document.body.classList.toggle("sb-sidenav-toggled");
     retrieveSections();
+    retrieveQuarter();
     return () => {
       emptyData();
     };
@@ -117,15 +150,26 @@ export default function OthersGradingSheet() {
     setselectedSection({ id, grade, section, name });
     emptyData();
     retrieveData(id);
-    retrieveGradingSheet(id);
+    retrieveGradingSheet(id,selectedQuarter.id);
+  };
+
+  const handleOnSelectQuarter = ({ id, grade, section, name }) => {
+    //console.debug(d);
+    setselectedQuarter({ id, name });
+    emptyData();
+    //retrieveData(id);
+    retrieveGradingSheet(selectedSection.id,id);
   };
 
   return (
     <MyUI
       loading={loading}
       sectiondata={sectiondata}
+      quarterdata={quarterdata}
       selectedSection={selectedSection}
+      selectedQuarter={selectedQuarter}
       handleOnSelectSection={handleOnSelectSection}
+      handleOnSelectQuarter={handleOnSelectQuarter}
       columns={pcolumns}
       subjdata={subjdata}
       handlePlotGrade={handlePlotGrade}

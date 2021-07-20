@@ -6,8 +6,11 @@ import { MyTableV3 } from "../MyTableV3";
 
 const MyUI = ({
   sectiondata,
+  quarterdata,
   selectedSection,
+  selectedQuarter,
   handleOnSelectSection,
+  handleOnSelectQuarter,
   loading,
   columns,
   subjdata,
@@ -75,11 +78,24 @@ const MyUI = ({
                       <div>
                         <span>
                           Grade & Section:{" "}
-                          {selectedSection ? selectedSection.name : ""}
+                          <strong>{selectedSection ? selectedSection.name : ""}</strong>
                         </span>
                         <MyDropDown
                           options={sectiondata}
                           handleOnSelect={handleOnSelectSection}
+                          btnTitle="Change"
+                        />
+                      </div>
+                    </Col>
+                    <Col md={2}>
+                      <div>
+                        <span>
+                          Quarter:{" "}
+                          <strong>{selectedQuarter ? selectedQuarter.name : ""}</strong>
+                        </span>
+                        <MyDropDown
+                          options={quarterdata}
+                          handleOnSelect={handleOnSelectQuarter}
                           btnTitle="Change"
                         />
                       </div>
@@ -102,8 +118,8 @@ const MyUI = ({
               <Row className="justify-content-md-center">
                 <Col>
                   <span>
-                    List of Students enrolled in{" "}
-                    {selectedSection ? selectedSection.name : ""}
+                    Grading Sheet for
+                    <strong> {selectedSection ? selectedSection.name : " "}-{selectedQuarter ? selectedQuarter.name : ""}</strong>
                   </span>
                   {nLoadingColumns && (
                     <Spinner animation="border" role="status">
