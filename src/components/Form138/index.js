@@ -47,7 +47,7 @@ export default function Form138() {
     const request = {
       cols: "e.student as id,s.lrn,s.name,e.student,s.sex,s.birthday,s.age",
       table: "enrolldet e",
-      order: "e.updatedAt desc",
+      order: "s.name asc",
       join: "left join student s on s.id=e.student",
       wc: `e.section=${secid}${
         term &&
@@ -84,18 +84,10 @@ export default function Form138() {
 
   const handlePreview = async (d) => {
     //console.debug(d);
-    const graderequest = {
-      cols: "subjectname,score",
-      table: "vallsubjectandgradesbystudent",
-      order: "name asc",
-      join: "",
-      wc: `studentid=${d.id} and section=${selectedSection.id}`,
-      limit: "",
-    };
-    const graderesponse = await api.post("/getDataWithJoinClause", graderequest).catch((err) => {
+    const a = { fn: `getForm138Grades(${selectedSection.id},${d.id},1)` };
+    const graderesponse = await api.post("/callSP", a).catch((err) => {
       setLoading(false);
-      console.error('error', JSON.stringify(err.message));
-      alert(JSON.stringify(err.message));
+      console.debug("err", JSON.stringify(err.message));
     });
     const attendancerequest = {
       cols: "month,daysofpresent",
@@ -112,7 +104,7 @@ export default function Form138() {
     });
     //console.log("response", response);
     if (graderesponse && attendanceresponse) {
-      setselectedStudent(d.name);
+      setselectedStudent(`${d.name} (${d.lrn})`);
       setgradeData([...graderesponse.data]);
       setattendanceData([...attendanceresponse.data]);
       setOpenModal(true);

@@ -98,16 +98,19 @@ const MyUI = (props) => {
       <MyModal
         openModal={props.openModal}
         setOpenModal={props.setOpenModal}
-        title={"Grade Preview for "+props.selectedStudent}
-        size="lg"
+        title={props.selectedStudent}
+        size="xl"
       >
         <div className="d-flex justify-content-center">
           <div className="p-4">
             <span>List of Grades</span>
             <MyTableV2
               pcolumns={[
-                { Header: "Subject", accessor: "subjectname" },
-                { Header: "Score", accessor: "score" },
+                { Header: "Subject", accessor: "subj_name" },
+                { Header: "Q1", accessor: "Q1" },
+                { Header: "Q2", accessor: "Q2" },
+                { Header: "Q3", accessor: "Q3" },
+                { Header: "Q4", accessor: "Q4" }
               ]}
               pdata={props.gradedata}
             />
