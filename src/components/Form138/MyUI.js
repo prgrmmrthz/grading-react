@@ -4,8 +4,16 @@ import MyModal from "../MyModal";
 import SearchBar from "../SearchBar";
 import { MyTableV2 } from "../MyTableV2";
 import MyDropDown from "../MyDropDown";
+import { useState } from "react";
 
 const MyUI = (props) => {
+  const [gheader]= useState([
+    { Header: "Subject", accessor: "subj_name" },
+    { Header: "Q1", accessor: "Q1" },
+    { Header: "Q2", accessor: "Q2" },
+    { Header: "Q3", accessor: "Q3" },
+    { Header: "Q4", accessor: "Q4" }
+  ]);
   return (
     <div>
       <Card>
@@ -105,14 +113,19 @@ const MyUI = (props) => {
           <div className="p-4">
             <span>List of Grades</span>
             <MyTableV2
-              pcolumns={[
-                { Header: "Subject", accessor: "subj_name" },
-                { Header: "Q1", accessor: "Q1" },
-                { Header: "Q2", accessor: "Q2" },
-                { Header: "Q3", accessor: "Q3" },
-                { Header: "Q4", accessor: "Q4" }
+              pcolumns={[...gheader,
+                { Header: "Final Rating", accessor: "final_rating" },
+                { Header: "Remarks", accessor: "remarks" }
               ]}
               pdata={props.gradedata}
+            />
+            <span>General Average: {props.genAve}</span>
+          </div>
+          <div className="p-4">
+            <span>Other Grades</span>
+            <MyTableV2
+              pcolumns={gheader}
+              pdata={props.othergradedata}
             />
           </div>
           <div className="p-4">
@@ -120,7 +133,9 @@ const MyUI = (props) => {
             <MyTableV2
               pcolumns={[
                 { Header: "Month", accessor: "month" },
+                { Header: "Days", accessor: "schooldays" },
                 { Header: "Present", accessor: "daysofpresent" },
+                { Header: "Absent", accessor: "absent" }
               ]}
               pdata={props.attendancedata}
             />

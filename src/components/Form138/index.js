@@ -11,7 +11,9 @@ export default function Form138() {
   const [loading, setLoading] = useState(false);
   const [disabled, setdisabled] = useState(true);
   const [data, setData] = useState([]);
+  const [genAve, setgenAve] = useState(0);
   const [gradedata, setgradeData] = useState([]);
+  const [othergradedata, setothergradeData] = useState([]);
   const [attendancedata, setattendanceData] = useState([]);
   const [classroomdata, setclassroomData] = useState([]);
   const [sectiondata, sectionsetData] = useState([]);
@@ -89,8 +91,13 @@ export default function Form138() {
       setLoading(false);
       console.debug("err", JSON.stringify(err.message));
     });
+    const b = { fn: `getForm138Grades(${selectedSection.id},${d.id},0)` };
+    const othergraderesponse = await api.post("/callSP", b).catch((err) => {
+      setLoading(false);
+      console.debug("err", JSON.stringify(err.message));
+    });
     const attendancerequest = {
-      cols: "month,daysofpresent",
+      cols: "month,schooldays,daysofpresent",
       table: "viewattendancesheet",
       order: "name asc",
       join: "",
@@ -103,10 +110,33 @@ export default function Form138() {
       alert(JSON.stringify(err.message));
     });
     //console.log("response", response);
-    if (graderesponse && attendanceresponse) {
+    if (graderesponse && attendanceresponse && othergraderesponse) {
+      const a = graderesponse.data.map(v => {
+        const fr = ((Number(v.Q1) + Number(v.Q2) + Number(v.Q3)+ Number(v.Q4)) / 4).toFixed(2);
+        return {
+          subj_name: v.subj_name,
+          Q1: v.Q1,
+          Q2: v.Q2,
+          Q3: v.Q3,
+          Q4: v.Q4,
+          final_rating: fr,
+          remarks: (fr>74.99) ? 'PASSED' : 'FAILED'
+        }
+      });
+      const attendanceData = attendanceresponse.data.map(v => {
+        return {
+          month: v.month,
+          schooldays: v.schooldays,
+          daysofpresent: v.daysofpresent,
+          absent: Number(v.schooldays) - Number(v.daysofpresent)
+        }
+      });
+      const generalaverage = a.reduce((p,c) => {return p + Number(c.final_rating) }, 0) / a.length;
+      setgenAve(generalaverage.toFixed(2));
       setselectedStudent(`${d.name} (${d.lrn})`);
-      setgradeData([...graderesponse.data]);
-      setattendanceData([...attendanceresponse.data]);
+      setgradeData([...a]);
+      setattendanceData([...attendanceData]);
+      setothergradeData([...othergraderesponse.data]);
       setOpenModal(true);
       setLoading(false);
     }
@@ -185,6 +215,8 @@ export default function Form138() {
       gradedata={gradedata}
       attendancedata={attendancedata}
       selectedStudent={selectedStudent}
+      othergradedata={othergradedata}
+      genAve={genAve}
     />
   );
 }
